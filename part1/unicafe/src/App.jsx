@@ -1,68 +1,72 @@
 import { useState } from "react";
 
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
+  if (total === 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <h1>statistics</h1>
+      <table style={{ borderCollapse: "collapse" }}>
+        <tbody>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <StatisticLine text="all" value={total} />
+          <StatisticLine text="average" value={average} />
+          <StatisticLine text="positive" value={positive + " %"} />
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td> {value}</td>
+    </tr>
+  );
+};
+
+const Button = ({ onClick, text }) => {
+  return <button onClick={onClick}>{text}</button>;
+};
+
 const App = () => {
-  // save clicks of each button to its own state
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-  const [all, setAll] = useState(good + neutral + bad);
-  const [average, setAverage] = useState(0);
-  const [positive, setPositive] = useState(0);
 
   const addGood = () => () => {
     let value = good + 1;
-    console.log("added before good", good);
     setGood(value);
-    addAll();
   };
   const addNeutral = () => () => {
     let value = neutral + 1;
-    console.log("added before neutral", neutral);
     setNeutral(value);
-    addAll();
   };
   const addBad = () => () => {
     let value = bad + 1;
-    console.log("added before bad", bad);
     setBad(value);
-    addAll();
-  };
-
-  const addAll = () => {
-    console.log("added before all", all);
-    let value = all + 1;
-    setAll(value);
-    handleMoreStatiscs();
-  };
-
-  const handleMoreStatiscs = () => {
-    addAverage();
-    addPositive();
-  };
-
-  const addAverage = () => {
-    let value = (good - bad) / all;
-    setAverage(value);
-  };
-
-  const addPositive = () => {
-    let value = (good / all) * 100;
-    setPositive(value);
   };
 
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={addGood()}>good</button>
-      <button onClick={addNeutral()}>neutral</button>
-      <button onClick={addBad()}>bad</button>
-      <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive} %</p>
+      <Button onClick={addGood()} text="good" />
+      <Button onClick={addNeutral()} text="neutral" />
+      <Button onClick={addBad()} text="bad" />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
