@@ -1,6 +1,13 @@
-# Ignore everything
-*
-
-# Except these files and directories
+.DS_Store
+.env
+*.log
+*.tmp
+*.swp
+*.swo
+.idea/
+.vscode/
+coverage/
+dist/
+build/
 !.gitignore
-!node_modules/
+node_modules/
