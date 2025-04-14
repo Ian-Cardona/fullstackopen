@@ -7,7 +7,6 @@
 .idea/
 .vscode/
 coverage/
-dist/
 build/
 !.gitignore
 node_modules/
