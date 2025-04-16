@@ -1,5 +1,19 @@
 const express = require("express");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
+
+const password = process.argv[2];
+const url = `mongodb+srv://iancardonadev:${password}@cluster0.zzez4if.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
+mongoose.set("strictQuery", false);
+mongoose.connect(url);
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+});
+
+const Person = mongoose.model("Person", personSchema);
 
 const app = express();
 app.use(express.json());
@@ -21,7 +35,9 @@ const generateId = () => String(Math.floor(Math.random() * 10000));
 
 // Routes
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((result) => {
+    res.json(result);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
