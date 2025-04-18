@@ -4,7 +4,10 @@ const Notification = ({ message }) => {
   }
 
   const errorStyle = {
-    color: message.includes("removed") ? "red" : "green",
+    color:
+      message.includes("removed") || message.includes("failed")
+        ? "red"
+        : "green",
   };
 
   return (

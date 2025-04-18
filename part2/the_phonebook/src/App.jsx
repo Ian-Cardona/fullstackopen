@@ -75,8 +75,9 @@ const App = () => {
         setNewName("");
         setNewNumber("");
       })
-      .catch(() => {
-        setErrorMessage(`Failed to add ${newPerson.name}`);
+      .catch((error) => {
+        setErrorMessage(`${error.response.data.error}`);
+        console.log(error.response.data.error);
         setTimeout(() => setErrorMessage(null), 5000);
       });
   };
