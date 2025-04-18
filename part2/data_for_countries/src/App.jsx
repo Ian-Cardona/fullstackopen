@@ -25,6 +25,11 @@ function App() {
     <div style={{ display: "flex", gap: "10px" }}>
       <p>find countries</p>
       <Input value={search} onChange={handleChange} />
+      <ul>
+        {allCountries.map((country, index) => (
+          <li key={index}>{country.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }

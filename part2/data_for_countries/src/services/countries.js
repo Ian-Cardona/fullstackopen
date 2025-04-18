@@ -13,15 +13,13 @@ const getAll = () => {
     });
 };
 
-const getByName = (name) => {
-  return axios
-    .get(`${baseUrl}/name/${name}`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.error("Error fetching country:", error);
-    });
+const getByName = async (name) => {
+  try {
+    const response = await axios.get(`${baseUrl}/name/${name}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching country:", error);
+  }
 };
 
 export default { getAll, getByName };
