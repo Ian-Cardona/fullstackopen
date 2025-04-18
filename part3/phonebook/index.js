@@ -80,14 +80,6 @@ app.get("/info", (req, res, next) => {
 app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
-  if (!body.name || !body.number) {
-    return res.status(400).json({ error: "Name or number is missing" });
-  }
-
-  // if (persons.some((person) => person.name === name)) {
-  //   return res.status(400).json({ error: "Name must be unique" });
-  // }
-
   const person = new Person({
     id: generateId(),
     name: body.name,
