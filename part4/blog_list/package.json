@@ -9,13 +9,14 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js fOFK3UHqdn02PSQa",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "lodash": "^4.17.21",
     "mongoose": "^8.13.2"
   },
   "devDependencies": {
