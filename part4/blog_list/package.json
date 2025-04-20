@@ -7,13 +7,14 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js fOFK3UHqdn02PSQa",
-    "test": "node --test",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch index.js fOFK3UHqdn02PSQa",
+    "test": "cross-env NODE_ENV=test node --test",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "lodash": "^4.17.21",
