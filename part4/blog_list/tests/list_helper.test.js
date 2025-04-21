@@ -56,7 +56,6 @@ const blogs = [
 
 test("dummy returns one", () => {
   const blogs = [];
-
   const result = listHelper.dummy(blogs);
   assert.strictEqual(result, 1);
 });
@@ -64,7 +63,6 @@ test("dummy returns one", () => {
 describe("total likes", () => {
   test("Total of 36 likes", () => {
     const result = listHelper.totalLikes(blogs);
-
     assert.strictEqual(result, 36);
   });
 
@@ -77,7 +75,6 @@ describe("total likes", () => {
 describe("favorite blog", () => {
   test("Favorite blog is here", () => {
     const result = listHelper.favoriteBlog(blogs);
-
     assert.deepStrictEqual(result, blogs[2]);
   });
 
