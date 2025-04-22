@@ -1,138 +1,97 @@
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const assert = require("node:assert");
 const Blog = require("../models/blog");
-const middleware = require("../utils/middleware");
+const helper = require("./test_helper");
 
 const api = supertest(app);
+describe("when there is initially some blogs saved", () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    await Blog.insertMany(helper.initialNotes);
+  });
 
-app.use(middleware.requestLogger);
-app.use(middleware.unknownEndpoint);
-app.use(middleware.errorHandler);
+  beforeEach(async () => {
+    await Blog.deleteMany({});
 
-const initialBlogs = [
-  {
-    _id: "5a422a851b54a676234d17f7",
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-    __v: 0,
-  },
-  {
-    _id: "5a422aa71b54a676234d17f8",
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-    __v: 0,
-  },
-  {
-    _id: "5a422b3a1b54a676234d17f9",
-    title: "Canonical string reduction",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    likes: 12,
-    __v: 0,
-  },
-  {
-    _id: "5a422b891b54a676234d17fa",
-    title: "First class tests",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-    likes: 10,
-    __v: 0,
-  },
-  {
-    _id: "5a422ba71b54a676234d17fb",
-    title: "TDD harms architecture",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-    likes: 0,
-    __v: 0,
-  },
-  {
-    _id: "5a422bc61b54a676234d17fc",
-    title: "Type wars",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-    likes: 2,
-    __v: 0,
-  },
-];
+    await Blog.insertMany(helper.initialBlogs);
+  });
 
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  let BlogObject = new Blog(initialBlogs[0]);
-  await BlogObject.save();
-  BlogObject = new Blog(initialBlogs[1]);
-  await BlogObject.save();
-});
+  test("blogs are returned as json", async () => {
+    await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
 
-test("blogs are returned as json", async () => {
-  await api
-    .get("/api/blogs")
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
-});
+  test("all blogs are returned", async () => {
+    const blogs = await helper.blogsInDb();
 
-test("all blogs are returned", async () => {
-  const response = await api.get("/api/blogs");
+    assert.strictEqual(blogs.length, helper.initialBlogs.length);
+  });
 
-  assert.strictEqual(response.body.length, 2);
-});
+  test("a specific blog is within the returned blogs", async () => {
+    const blogs = await helper.blogsInDb();
+    console.log(blogs.body);
 
-test("a specific blog is within the returned blogs", async () => {
-  const response = await api.get("/api/blogs");
-  console.log(response.body);
+    const titles = blogs.map((e) => e.title);
+    assert(titles.includes("Go To Statement Considered Harmful"));
+  });
 
-  const titles = response.body.map((e) => e.title);
-  assert(titles.includes("Go To Statement Considered Harmful"));
-});
+  test("all blogs are returned", async () => {
+    const response = await api.get("/api/blogs");
 
-test("all blogs are returned", async () => {
-  const response = await api.get("/api/blogs");
+    assert.strictEqual(response.body.length, helper.initialBlogs.length);
+  });
 
-  assert.strictEqual(response.body.length, 2);
-});
+  test("a valid blog can be added ", async () => {
+    const newBlog = {
+      title: "This is a sample blog",
+      author: "Ian N. Cardona",
+      url: "https://drainggang.com.ph",
+      likes: 5,
+    };
 
-test("a valid blog can be added ", async () => {
-  const newBlog = {
-    title: "This is a sample blog",
-    author: "Ian N. Cardona",
-    url: "https://drainggang.com.ph",
-    likes: 5,
-  };
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
 
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+    const blogsAtEnd = await helper.blogsInDb();
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
 
-  const response = await api.get("/api/blogs");
+    const titles = blogsAtEnd.map((r) => r.title);
+    assert(titles.includes("This is a sample blog"));
+  });
 
-  const titles = response.body.map((r) => r.title);
+  test("blog without title is not added", async () => {
+    const newBlog = {
+      author: "Invalid Author",
+      url: "https://invalidurl.com",
+      likes: 0,
+    };
 
-  console.log(titles);
+    await api.post("/api/blogs").send(newBlog).expect(400);
 
-  assert.strictEqual(response.body.length, initialBlogs.length + 1);
+    const blogsAtEnd = await helper.blogsInDb();
 
-  assert(titles.includes("This is a sample blog"));
-});
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+  });
 
-test.only("blog without content is not added", async () => {
-  const newBlog = {
-    author: "Authorized",
-  };
+  test("blog without likes will default to zero", async () => {
+    const newBlog = {
+      title: "No likes",
+      author: "No likes Author",
+      url: "https://nolikesurl.com",
+    };
 
-  await api.post("/api/blogs").send(newBlog).expect(400);
+    const request = await api.post("/api/blogs").send(newBlog);
 
-  const response = await api.get("/api/blogs");
-
-  assert.strictEqual(response.body.length, 2);
+    assert.strictEqual(request.statusCode, 201);
+  });
 });
 
 after(async () => {

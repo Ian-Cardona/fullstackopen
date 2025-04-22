@@ -9,6 +9,7 @@ blogsRouter.get("/api/blogs", (request, response) => {
 });
 
 blogsRouter.post("/api/blogs", (request, response, next) => {
+  console.log(request.body);
   const blog = new Blog(request.body);
   console.log("Posting a new blog", blog);
 
@@ -17,9 +18,7 @@ blogsRouter.post("/api/blogs", (request, response, next) => {
     .then((result) => {
       response.status(201).json(result);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch((error) => next(error));
 });
 
 module.exports = blogsRouter;
