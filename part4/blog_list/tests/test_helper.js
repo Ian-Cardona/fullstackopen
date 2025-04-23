@@ -52,7 +52,11 @@ const initialBlogs = [
 ];
 
 const nonExistingId = async () => {
-  const blog = new Blog({ author: "Will Smith" });
+  const blog = new Blog({
+    title: "This a fake",
+    author: "Will Smith",
+    url: "https://fake.com",
+  });
   await blog.save();
   await blog.deleteOne();
 
