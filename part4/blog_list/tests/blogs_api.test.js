@@ -47,7 +47,7 @@ describe("when there is initially some blogs saved", () => {
     });
 
     test("fails with statuscode 404 if blog does not exist", async () => {
-      const validNonexistingId = await helper.nonExistingId();
+      const validNonexistingId = await helper.nonExistingIdBlog();
 
       await api.get(`/api/blogs/${validNonexistingId}`).expect(404);
     });
@@ -112,7 +112,7 @@ describe("when there is initially some blogs saved", () => {
     });
   });
 
-  describe.only("deletion of a blog", () => {
+  describe("deletion of a blog", () => {
     test("succeeds with status code 204 if id is valid", async () => {
       const blogsAtStart = await helper.blogsInDb();
       const blogToDelete = blogsAtStart[0];

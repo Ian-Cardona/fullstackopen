@@ -1,4 +1,5 @@
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -51,7 +52,7 @@ const initialBlogs = [
   },
 ];
 
-const nonExistingId = async () => {
+const nonExistingIdBlog = async () => {
   const blog = new Blog({
     title: "This a fake",
     author: "Will Smith",
@@ -68,8 +69,37 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+// const initialUsers = [
+//   {
+//     username: "iancardona001",
+//     name: "Ian Cardona",
+//     password: "password12345",
+//     blogs: [],
+//     id: "680ba40e0db3da91bd66aaf5",
+//   },
+// ];
+
+const nonExistingIdUser = async () => {
+  const user = new User({
+    username: "FakeUser",
+    name: "Fake User",
+    blogs: [],
+  });
+  await user.save();
+  await user.deleteOne();
+
+  return user._id.toString();
+};
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
+
 module.exports = {
   initialBlogs,
-  nonExistingId,
+  nonExistingIdBlog,
   blogsInDb,
+  nonExistingIdUser,
+  usersInDb,
 };
