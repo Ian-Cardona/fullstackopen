@@ -7,15 +7,19 @@ const Blog = require("../models/blog");
 const helper = require("./test_helper");
 
 const api = supertest(app);
-describe("when there is initially some blogs saved", () => {
+describe.only("when there is initially some blogs saved", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
+
+    // Generate a valid token for authentication
+    helper.token = await helper.loginUser();
   });
 
   test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
+      .auth(helper.token, { type: "bearer" })
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
@@ -40,6 +44,7 @@ describe("when there is initially some blogs saved", () => {
 
       const resultBlog = await api
         .get(`/api/blogs/${blogToView._id}`)
+        .auth(helper.token, { type: "bearer" })
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
@@ -49,13 +54,19 @@ describe("when there is initially some blogs saved", () => {
     test("fails with statuscode 404 if blog does not exist", async () => {
       const validNonexistingId = await helper.nonExistingIdBlog();
 
-      await api.get(`/api/blogs/${validNonexistingId}`).expect(404);
+      await api
+        .get(`/api/blogs/${validNonexistingId}`)
+        .auth(helper.token, { type: "bearer" })
+        .expect(404);
     });
 
     test("fails with statuscode 400 id is invalid", async () => {
       const invalidId = "5a3d5da59070081a82a3445";
 
-      await api.get(`/api/blogs/${invalidId}`).expect(400);
+      await api
+        .get(`/api/blogs/${invalidId}`)
+        .auth(helper.token, { type: "bearer" })
+        .expect(400);
     });
   });
 
@@ -65,10 +76,12 @@ describe("when there is initially some blogs saved", () => {
       author: "Ian N. Cardona",
       url: "https://drainggang.com.ph",
       likes: 5,
+      userId: "680ca065eaddb6f9fca16d99",
     };
 
     await api
       .post("/api/blogs")
+      .auth(helper.token, { type: "bearer" })
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
@@ -90,6 +103,7 @@ describe("when there is initially some blogs saved", () => {
 
       await api
         .post("/api/blogs")
+        .auth(helper.token, { type: "bearer" })
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -101,10 +115,33 @@ describe("when there is initially some blogs saved", () => {
       assert(contents.includes("This is my new blog!"));
     });
 
+    test("fails with status code 401 if unauthorized", async () => {
+      const newBlog = {
+        title: "This is my new wwww!",
+        author: "Ian N. www",
+        url: "https://iancardona.io",
+        userId: "680ca065eaddb6f9fca16d99",
+      };
+
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .auth("jqwjekjqhwejkqwhjexhkjwq", { type: "bearer" })
+        .expect(401);
+
+      const blogsAtEnd = await helper.blogsInDb();
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+    });
+
     test("fails with status code 400 if data invalid", async () => {
       const newBlog = { title: true };
 
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .auth(helper.token, { type: "bearer" })
+        .expect(400);
 
       const blogsAtEnd = await helper.blogsInDb();
 
@@ -117,7 +154,10 @@ describe("when there is initially some blogs saved", () => {
       const blogsAtStart = await helper.blogsInDb();
       const blogToDelete = blogsAtStart[0];
 
-      await api.delete(`/api/blogs/${blogToDelete._id.toString()}`).expect(204);
+      await api
+        .delete(`/api/blogs/${blogToDelete._id.toString()}`)
+        .auth(helper.token, { type: "bearer" })
+        .expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
 
@@ -150,12 +190,16 @@ describe("when there is initially some blogs saved", () => {
 
   test("blog without likes will default to zero", async () => {
     const newBlog = {
-      title: "No likes",
-      author: "No likes Author",
-      url: "https://nolikesurl.com",
+      title: "Voooo",
+      author: "No Vavooom",
+      url: "https://Vavoom.com",
+      userId: "680ca065eaddb6f9fca16d99",
     };
 
-    const request = await api.post("/api/blogs").send(newBlog);
+    const request = await api
+      .post("/api/blogs")
+      .auth(helper.token, { type: "bearer" })
+      .send(newBlog);
 
     assert.strictEqual(request.statusCode, 201);
   });
