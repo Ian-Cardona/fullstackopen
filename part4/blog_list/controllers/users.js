@@ -4,7 +4,30 @@ const bcrypt = require("bcrypt");
 
 usersRouter.get("/", async (_, response, next) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate("blogs", {
+      title: 1,
+      author: 1,
+      url: 1,
+      likes: 1,
+    });
+    response.json(users);
+  } catch (error) {
+    next(error);
+  }
+});
+
+usersRouter.get("/:id", async (request, response, next) => {
+  const { id } = request.params;
+  if (!id) {
+    return response.status(400).json({ error: "id is required" });
+  }
+  try {
+    const users = await User.find({ _id: id }).populate("blogs", {
+      title: 1,
+      author: 1,
+      url: 1,
+      likes: 1,
+    });
     response.json(users);
   } catch (error) {
     next(error);

@@ -8,7 +8,7 @@ const User = require("../models/user");
 const helper = require("./test_helper");
 
 const api = supertest(app);
-describe.only("when there is initially some users saved", () => {
+describe("when there is initially some users saved", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 

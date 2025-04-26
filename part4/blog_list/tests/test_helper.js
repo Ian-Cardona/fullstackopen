@@ -1,7 +1,41 @@
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+
+const loginUser = async () => {
+  await User.deleteMany({}); // Clean up users before creating a new one
+
+  const passwordHash = await bcrypt.hash("sahur123", 10);
+  const user = new User({
+    username: "tungtung",
+    passwordHash,
+  });
+
+  await user.save();
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+
+  const token = jwt.sign(userForToken, process.env.SECRET, {
+    expiresIn: "1h",
+  });
+
+  return token;
+};
 
 const initialBlogs = [
+  {
+    title: "Tungtungtung Vlog",
+    author: "Tungtung Sahur",
+    url: "http://www.tungtungtung.com",
+    likes: 3,
+    user: "680caadd4303f1893326c471",
+    _id: "680caba04303f1893326c486",
+    __v: 0,
+  },
   {
     _id: "5a422a851b54a676234d17f7",
     title: "React patterns",
@@ -54,9 +88,11 @@ const initialBlogs = [
 
 const nonExistingIdBlog = async () => {
   const blog = new Blog({
-    title: "This a fake",
-    author: "Will Smith",
-    url: "https://fake.com",
+    title: "Tungtungtung Vlog",
+    author: "Tungtung Sahur",
+    url: "http://www.tungtungtung.com",
+    likes: 3,
+    user: "680caadd4303f1893326c471",
   });
   await blog.save();
   await blog.deleteOne();
@@ -69,15 +105,36 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
-// const initialUsers = [
-//   {
-//     username: "iancardona001",
-//     name: "Ian Cardona",
-//     password: "password12345",
-//     blogs: [],
-//     id: "680ba40e0db3da91bd66aaf5",
-//   },
-// ];
+const initialUsers = [
+  {
+    username: "tungtung",
+    name: "sahur",
+    blogs: [
+      {
+        _id: "680cab884303f1893326c47e",
+        title: "Unique Blog 1",
+        author: "Tungtung Sahur",
+        url: "http://www.tungtungtung.com/1",
+        likes: 3,
+      },
+      {
+        _id: "680cab8f4303f1893326c482",
+        title: "Unique Blog 2",
+        author: "Tungtung Sahur",
+        url: "http://www.tungtungtung.com/2",
+        likes: 5,
+      },
+      {
+        _id: "680caba04303f1893326c486",
+        title: "Unique Blog 3",
+        author: "Tungtung Sahur",
+        url: "http://www.tungtungtung.com/3",
+        likes: 7,
+      },
+    ],
+    id: "680caadd4303f1893326c471",
+  },
+];
 
 const nonExistingIdUser = async () => {
   const user = new User({
@@ -97,7 +154,9 @@ const usersInDb = async () => {
 };
 
 module.exports = {
+  loginUser,
   initialBlogs,
+  initialUsers,
   nonExistingIdBlog,
   blogsInDb,
   nonExistingIdUser,

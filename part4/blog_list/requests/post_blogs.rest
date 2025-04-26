@@ -1,9 +1,13 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InR1bmd0dW5nIiwiaWQiOiI2ODBjYWFkZDQzMDNmMTg5MzMyNmM0NzEiLCJpYXQiOjE3NDU2NjA3NjIsImV4cCI6MTc0NTY2NDM2Mn0.Oi1Ewiwz-ePAS3DYydlUPtW_Z3JAK8j5ajCGJlknDDs
 
 {
-     "title": "Type wars",
-     "author": "Robert C. Martin",
-     "url": "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-     "likes": 2
+     "title": "Tungtungtung Vlog",
+     "author": "Tungtung Sahur",
+     "url": "http://www.tungtungtung.com",
+     "likes": 3,
+     "userId": "680caadd4303f1893326c471"
 }
+
+
