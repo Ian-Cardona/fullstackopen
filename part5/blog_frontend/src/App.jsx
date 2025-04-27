@@ -39,8 +39,8 @@ function App() {
       const errorMsg = exception.response
         ? exception.response.data.error
         : "Something went wrong";
-      setStatusCode(exception.response ? exception.response.status : 500); // Capture the status code
-      setErrorMessage(errorMsg); // Set the error message
+      setStatusCode(exception.response ? exception.response.status : 500);
+      setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(null), 5000);
     }
   };
@@ -55,14 +55,14 @@ function App() {
       const newBlog = await blogService.create({ title, author, url });
       setBlogs((prevBlogs) => prevBlogs.concat(newBlog));
       setErrorMessage(`A new blog ${title} by ${author} created!`);
-      setStatusCode(200); // Success code for blog creation
-      setTimeout(() => setErrorMessage(null), 5000); // Hide message after 5 seconds
+      setStatusCode(200);
+      setTimeout(() => setErrorMessage(null), 5000);
     } catch (exception) {
       const errorMsg = exception.response
         ? exception.response.data.error
         : "Something went wrong";
-      setStatusCode(exception.response ? exception.response.status : 500); // Capture the status code
-      setErrorMessage(errorMsg); // Set the error message
+      setStatusCode(exception.response ? exception.response.status : 500);
+      setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(null), 5000);
     }
   };
