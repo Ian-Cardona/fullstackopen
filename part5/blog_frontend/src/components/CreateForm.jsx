@@ -1,29 +1,22 @@
 import { useState } from "react";
-import blogService from "../services/blogs";
 
-const CreateForm = () => {
+const CreateForm = ({ handleCreate }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const handleCreate = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    try {
-      const user = await blogService.create({ title, author, url });
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-    } catch (exception) {
-      setErrorMessage("Invalid Input");
-      setTimeout(() => setErrorMessage(null), 5000);
-    }
+    handleCreate(title, author, url);
+    setTitle("");
+    setAuthor("");
+    setUrl("");
   };
 
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleCreate}>
+      <form onSubmit={handleSubmit}>
         <div>
           title
           <input

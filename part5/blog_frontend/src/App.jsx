@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
@@ -34,7 +36,11 @@ function App() {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
+      const errorMsg = exception.response
+        ? exception.response.data.error
+        : "Something went wrong";
+      setStatusCode(exception.response ? exception.response.status : 500); // Capture the status code
+      setErrorMessage(errorMsg); // Set the error message
       setTimeout(() => setErrorMessage(null), 5000);
     }
   };
@@ -44,11 +50,30 @@ function App() {
     setUser(null);
   };
 
+  const handleCreate = async (title, author, url) => {
+    try {
+      const newBlog = await blogService.create({ title, author, url });
+      setBlogs((prevBlogs) => prevBlogs.concat(newBlog));
+      setErrorMessage(`A new blog ${title} by ${author} created!`);
+      setStatusCode(200); // Success code for blog creation
+      setTimeout(() => setErrorMessage(null), 5000); // Hide message after 5 seconds
+    } catch (exception) {
+      const errorMsg = exception.response
+        ? exception.response.data.error
+        : "Something went wrong";
+      setStatusCode(exception.response ? exception.response.status : 500); // Capture the status code
+      setErrorMessage(errorMsg); // Set the error message
+      setTimeout(() => setErrorMessage(null), 5000);
+    }
+  };
+
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
-        {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+        {errorMessage && (
+          <Notification message={errorMessage} statusCode={statusCode} />
+        )}
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -77,11 +102,14 @@ function App() {
   return (
     <div>
       <h2>Blogs</h2>
+      {errorMessage && (
+        <Notification message={errorMessage} statusCode={statusCode} />
+      )}
       <div style={{ display: "flex", alignItems: "center" }}>
         <p>{user.name} is logged in</p>
-        <button onClick={handleLogout}>logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
-      <CreateForm />
+      <CreateForm handleCreate={handleCreate} />
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
