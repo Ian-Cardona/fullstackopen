@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
+import Togglable from "./components/Togglable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -10,6 +12,8 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
@@ -34,7 +38,11 @@ function App() {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
+      const errorMsg = exception.response
+        ? exception.response.data.error
+        : "Something went wrong";
+      setStatusCode(exception.response ? exception.response.status : 500);
+      setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(null), 5000);
     }
   };
@@ -44,11 +52,31 @@ function App() {
     setUser(null);
   };
 
+  const handleCreate = async (title, author, url) => {
+    try {
+      blogFormRef.current.toggleVisibility();
+      const newBlog = await blogService.create({ title, author, url });
+      setBlogs((prevBlogs) => prevBlogs.concat(newBlog));
+      setErrorMessage(`A new blog ${title} by ${author} created!`);
+      setStatusCode(200);
+      setTimeout(() => setErrorMessage(null), 5000);
+    } catch (exception) {
+      const errorMsg = exception.response
+        ? exception.response.data.error
+        : "Something went wrong";
+      setStatusCode(exception.response ? exception.response.status : 500);
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(null), 5000);
+    }
+  };
+
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
-        {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+        {errorMessage && (
+          <Notification message={errorMessage} statusCode={statusCode} />
+        )}
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -77,14 +105,23 @@ function App() {
   return (
     <div>
       <h2>Blogs</h2>
+      {errorMessage && (
+        <Notification message={errorMessage} statusCode={statusCode} />
+      )}
       <div style={{ display: "flex", alignItems: "center" }}>
         <p>{user.name} is logged in</p>
-        <button onClick={handleLogout}>logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
-      <CreateForm />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <CreateForm handleCreate={handleCreate} />
+      </Togglable>
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <div key={blog._id}>
+            <Blog key={blog._id} blog={blog} user={user} />
+          </div>
+        ))}
     </div>
   );
 }
