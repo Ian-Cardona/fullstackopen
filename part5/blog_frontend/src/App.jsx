@@ -38,6 +38,7 @@ function App() {
       setUser(user);
       setUsername("");
       setPassword("");
+      setErrorMessage("");
     } catch (exception) {
       const errorMsg = exception.response
         ? exception.response.data.error
@@ -82,6 +83,7 @@ function App() {
   if (!user) {
     return (
       <LoginForm
+        errorMessage={errorMessage}
         handleLogin={handleLogin}
         handleUsernameChange={handleUsernameChange}
         handlePasswordChange={handlePasswordChange}
