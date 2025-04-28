@@ -5,6 +5,7 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
+import LoginForm from "./components/LoginForm";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -47,6 +48,14 @@ function App() {
     }
   };
 
+  const handleUsernameChange = (value) => {
+    setUsername(value);
+  };
+
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+  };
+
   const handleLogout = () => {
     window.localStorage.clear();
     setUser(null);
@@ -72,33 +81,13 @@ function App() {
 
   if (!user) {
     return (
-      <div>
-        <h2>Log in to application</h2>
-        {errorMessage && (
-          <Notification message={errorMessage} statusCode={statusCode} />
-        )}
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
+      <LoginForm
+        handleLogin={handleLogin}
+        handleUsernameChange={handleUsernameChange}
+        handlePasswordChange={handlePasswordChange}
+        username={username}
+        password={password}
+      />
     );
   }
 
