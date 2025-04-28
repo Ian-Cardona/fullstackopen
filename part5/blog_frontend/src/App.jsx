@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
+import Togglable from "./components/Togglable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -12,6 +13,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [statusCode, setStatusCode] = useState(null);
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
@@ -52,6 +54,7 @@ function App() {
 
   const handleCreate = async (title, author, url) => {
     try {
+      blogFormRef.current.toggleVisibility();
       const newBlog = await blogService.create({ title, author, url });
       setBlogs((prevBlogs) => prevBlogs.concat(newBlog));
       setErrorMessage(`A new blog ${title} by ${author} created!`);
@@ -109,10 +112,16 @@ function App() {
         <p>{user.name} is logged in</p>
         <button onClick={handleLogout}>Logout</button>
       </div>
-      <CreateForm handleCreate={handleCreate} />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <CreateForm handleCreate={handleCreate} />
+      </Togglable>
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <div key={blog._id}>
+            <Blog key={blog._id} blog={blog} user={user} />
+          </div>
+        ))}
     </div>
   );
 }
