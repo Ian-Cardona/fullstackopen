@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { expect, test } from "vitest";
 import Blog from "./Blog";
 
 test("renders content", () => {
@@ -10,8 +9,13 @@ test("renders content", () => {
     likes: 7,
   };
 
-  render(<Blog blog={blog} />);
+  const user = {
+    username: "tungtungtung",
+    name: "sahur",
+  };
 
-  const element = screen.getByText("React patterns");
+  render(<Blog blog={blog} user={user} />);
+
+  const element = screen.getByText(/React patterns/i);
   expect(element).toBeDefined();
 });
