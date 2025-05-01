@@ -61,8 +61,7 @@ function App() {
     window.localStorage.clear();
     setUser(null);
   };
-
-  const handleCreate = async (title, author, url) => {
+  const handleCreate = async ({ title, author, url }) => {
     try {
       blogFormRef.current.toggleVisibility();
       const newBlog = await blogService.create({ title, author, url });
