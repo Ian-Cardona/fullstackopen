@@ -7,7 +7,11 @@ const CreateForm = ({ handleCreate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleCreate(title, author, url);
+    handleCreate({
+      title,
+      author,
+      url,
+    });
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -23,6 +27,7 @@ const CreateForm = ({ handleCreate }) => {
             type="text"
             value={title}
             name="title"
+            id="cb-title-field"
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
@@ -32,6 +37,7 @@ const CreateForm = ({ handleCreate }) => {
             type="text"
             value={author}
             name="author"
+            id="cb-author-field"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
@@ -41,6 +47,7 @@ const CreateForm = ({ handleCreate }) => {
             type="text"
             value={url}
             name="url"
+            id="cb-url-field"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
