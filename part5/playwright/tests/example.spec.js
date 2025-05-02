@@ -1,19 +1,46 @@
-// @ts-check
-import { test, expect } from '@playwright/test';
+const { describe, beforeEach, test, expect } = require("@playwright/test");
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+describe("Blog app", () => {
+  beforeEach(async ({ page, request }) => {
+    await request.post("http://localhost:3003/api/testing/reset");
+    await request.post("http://localhost:3003/api/users", {
+      data: {
+        name: "Ian Cardona",
+        username: "iancardona",
+        password: "iancardona123",
+      },
+    });
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+    await page.goto("http://localhost:5173");
+  });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  test("Login form is shown", async ({ page }) => {
+    const titleLocator = await page.getByText("Log in to application");
+    const usernameLocator = await page.getByText("username");
+    const passwordLocator = await page.getByText("password");
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+    await expect(titleLocator).toBeVisible();
+    await expect(usernameLocator).toBeVisible();
+    await expect(passwordLocator).toBeVisible();
+  });
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  describe("Login", () => {
+    test("succeeds with correct credentials", async ({ page }) => {
+      await page.getByTestId("username").fill("iancardona");
+      await page.getByTestId("password").fill("iancardona123");
+      await page.getByRole("button", { name: "login" }).click();
+
+      await expect(page.getByText("Ian Cardona is logged in")).toBeVisible();
+    });
+
+    test("fails with incorrect credentials", async ({ page }) => {
+      await page.getByTestId("username").fill("iancardong");
+      await page.getByTestId("password").fill("iancardona123");
+      await page.getByRole("button", { name: "login" }).click();
+
+      await expect(
+        page.getByText("Ian Cardona is logged in")
+      ).not.toBeVisible();
+    });
+  });
 });
