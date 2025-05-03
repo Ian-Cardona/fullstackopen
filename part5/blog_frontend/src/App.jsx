@@ -49,6 +49,16 @@ function App() {
     }
   };
 
+  const handleLike = async (blog) => {
+    const likesCount = blog.likes;
+    const updateLikes = {
+      likes: likesCount + 1,
+    };
+    await blogService.update(blog._id, updateLikes);
+    const updatedBlogs = await blogService.getAll();
+    setBlogs(updatedBlogs);
+  };
+
   const handleUsernameChange = (value) => {
     setUsername(value);
   };
@@ -64,8 +74,9 @@ function App() {
   const handleCreate = async ({ title, author, url }) => {
     try {
       blogFormRef.current.toggleVisibility();
-      const newBlog = await blogService.create({ title, author, url });
-      setBlogs((prevBlogs) => prevBlogs.concat(newBlog));
+      await blogService.create({ title, author, url });
+      const updatedBlogs = await blogService.getAll();
+      setBlogs(updatedBlogs);
       setErrorMessage(`A new blog ${title} by ${author} created!`);
       setStatusCode(200);
       setTimeout(() => setErrorMessage(null), 5000);
@@ -109,7 +120,13 @@ function App() {
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
           <div key={blog._id}>
-            <Blog key={blog._id} blog={blog} user={user} />
+            <Blog
+              key={blog._id}
+              blog={blog}
+              user={user}
+              setBlogs={setBlogs}
+              handleLike={handleLike}
+            />
           </div>
         ))}
     </div>

@@ -1,23 +1,13 @@
-import BlogDetails from "./BlogDetails";
-import Togglable from "./Togglable";
 import blogService from "../services/blogs";
-import { useState } from "react";
+import Togglable from "./Togglable";
+import BlogDetails from "./BlogDetails";
 
-const Blog = ({ blog, user }) => {
-  const [likes, setLikes] = useState(blog.likes);
-
-  const handleLike = async () => {
-    const updatedBlog = {
-      ...blog,
-      likes: likes + 1,
-    };
-    await blogService.update(blog._id, updatedBlog);
-    setLikes(likes + 1);
-  };
-
+const Blog = ({ blog, user, setBlogs, handleLike }) => {
   const handleRemove = async () => {
     if (window.confirm("Are you sure?")) {
       await blogService.remove(blog._id);
+      const updatedBlogs = await blogService.getAll();
+      setBlogs(updatedBlogs);
     }
   };
 
@@ -30,14 +20,14 @@ const Blog = ({ blog, user }) => {
   };
 
   return (
-    <div className="blog" style={blogStyle}>
+    <div className="blog" data-testid="blog" style={blogStyle}>
       {blog.title} {blog.author}
       <Togglable buttonLabel="view">
         <BlogDetails
           blog={blog}
           user={user}
-          likes={likes}
-          onLike={handleLike}
+          likes={blog.likes}
+          onLike={() => handleLike(blog)}
           onRemove={handleRemove}
         />
       </Togglable>
