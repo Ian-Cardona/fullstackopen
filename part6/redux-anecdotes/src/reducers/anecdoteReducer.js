@@ -22,7 +22,7 @@ const initialState = anecdotesAtStart
   .map(asObject)
   .sort((a, b) => b.votes - a.votes);
 
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
   console.log("state now", state);
   console.log("action", action);
 
@@ -38,10 +38,8 @@ const reducer = (state = initialState, action) => {
         )
         .sort((a, b) => b.votes - a.votes);
     default:
-      break;
+      return state;
   }
-
-  return state;
 };
 
 export const createAnecdote = (content) => {
@@ -60,4 +58,4 @@ export const voteAnecdote = (id) => {
   };
 };
 
-export default reducer;
+export default anecdoteReducer;
