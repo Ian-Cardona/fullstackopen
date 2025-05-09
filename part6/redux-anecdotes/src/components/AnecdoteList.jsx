@@ -16,14 +16,10 @@ const AnecdoteList = () => {
     );
   });
 
-  // const anecdotes = useSelector((state) => state.anecdotes);
-
   const vote = (id) => {
-    const anecdoteId = anecdotes.find((a) => (a.id === id ? a : null));
-    console.log(anecdoteId);
-    dispatch(voteAnecdote(id));
-    dispatch(showNotification(`you voted "${anecdoteId.content}"`));
-    console.log("APP vote", id);
+    const anecdote = anecdotes.find((a) => (a.id === id ? a : null));
+    dispatch(voteAnecdote(anecdote));
+    dispatch(showNotification(`you voted "${anecdote.content}"`, 10));
   };
 
   return (
