@@ -1,0 +1,34 @@
+# Node.js
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+jspm_packages/
+
+# Build output
+dist/
+public/build/
+
+# Vite
+.vite/
+
+# Miscellaneous
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+# IDE specific
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
