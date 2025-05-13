@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 const Anecdote = ({ anecdotes }) => {
   const { id } = useParams();
+  console.log("id", id);
   const anecdote = anecdotes.find((a) => a.id === Number(id));
 
   if (!anecdote) return <div>Anecdote not found</div>;
