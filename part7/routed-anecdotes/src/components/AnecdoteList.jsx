@@ -1,5 +1,4 @@
-import { Link, Routes, Route } from "react-router-dom";
-import Anecdote from "./Anecdote";
+import { Link } from "react-router-dom";
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
