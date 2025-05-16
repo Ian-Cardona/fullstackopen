@@ -6,6 +6,8 @@ import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
+import { showNotification } from "./reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -15,6 +17,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [statusCode, setStatusCode] = useState(null);
   const blogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
@@ -77,16 +80,19 @@ function App() {
       await blogService.create({ title, author, url });
       const updatedBlogs = await blogService.getAll();
       setBlogs(updatedBlogs);
-      setErrorMessage(`A new blog ${title} by ${author} created!`);
-      setStatusCode(200);
-      setTimeout(() => setErrorMessage(null), 5000);
+      dispatch(
+        showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
+      );
     } catch (exception) {
-      const errorMsg = exception.response
-        ? exception.response.data.error
-        : "Something went wrong";
-      setStatusCode(exception.response ? exception.response.status : 500);
-      setErrorMessage(errorMsg);
-      setTimeout(() => setErrorMessage(null), 5000);
+      dispatch(
+        showNotification(
+          exception.response.data.error
+            ? exception.response.data.error
+            : "Something went wrong",
+          exception.response ? exception.response.status : 500,
+          5
+        )
+      );
     }
   };
 
@@ -106,9 +112,7 @@ function App() {
   return (
     <div>
       <h2>Blogs</h2>
-      {errorMessage && (
-        <Notification message={errorMessage} statusCode={statusCode} />
-      )}
+      <Notification message={errorMessage} statusCode={statusCode} />
       <div style={{ display: "flex", alignItems: "center" }}>
         <p>{user.name} is logged in</p>
         <button onClick={handleLogout}>Logout</button>
