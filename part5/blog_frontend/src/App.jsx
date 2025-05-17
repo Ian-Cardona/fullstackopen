@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -7,10 +8,12 @@ import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import { showNotification } from "./reducers/notificationReducer";
-import { useDispatch } from "react-redux";
+import { getBlogs } from "./reducers/blogReducer";
 
 function App() {
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
+  console.log("blogs", blogs);
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -20,8 +23,8 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
-  }, []);
+    dispatch(getBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInUser");
@@ -58,8 +61,7 @@ function App() {
       likes: likesCount + 1,
     };
     await blogService.update(blog._id, updateLikes);
-    const updatedBlogs = await blogService.getAll();
-    setBlogs(updatedBlogs);
+    dispatch(getBlogs());
   };
 
   const handleUsernameChange = (value) => {
@@ -78,8 +80,7 @@ function App() {
     try {
       blogFormRef.current.toggleVisibility();
       await blogService.create({ title, author, url });
-      const updatedBlogs = await blogService.getAll();
-      setBlogs(updatedBlogs);
+      dispatch(getBlogs());
       dispatch(
         showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
       );
@@ -120,19 +121,15 @@ function App() {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <CreateForm handleCreate={handleCreate} />
       </Togglable>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
+      {!blogs || blogs.length === 0 ? (
+        <p>No blogs</p>
+      ) : (
+        sortedBlogs.map((blog) => (
           <div key={blog._id}>
-            <Blog
-              key={blog._id}
-              blog={blog}
-              user={user}
-              setBlogs={setBlogs}
-              handleLike={handleLike}
-            />
+            <Blog blog={blog} user={user} handleLike={handleLike} />
           </div>
-        ))}
+        ))
+      )}
     </div>
   );
 }
