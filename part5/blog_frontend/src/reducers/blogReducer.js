@@ -19,7 +19,7 @@ const blogSlice = createSlice({
     },
     removeBlog(state, action) {
       console.log("action id", action.payload);
-      return state.filter((blog) => blog.id !== action.payload);
+      return state.filter((blog) => blog._id !== action.payload);
     },
   },
 });
