@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
-
 const blogSlice = createSlice({
   name: "blogs",
   initialState: [],
@@ -18,18 +17,41 @@ const blogSlice = createSlice({
         .map((blog) => (blog.id === updated.id ? updated : blog))
         .sort((a, b) => b.votes - a.votes);
     },
+    removeBlog(state, action) {
+      console.log("action id", action.payload);
+      return state.filter((blog) => blog.id !== action.payload);
+    },
   },
 });
 
-export const { setBlogs, appendBlogs, updateBlogs } = blogSlice.actions;
+export const { setBlogs, appendBlogs, updateBlogs, removeBlog } =
+  blogSlice.actions;
 
 export const getBlogs = () => async (dispatch) => {
   try {
     const blogs = await blogService.getAll();
-    console.log("blogs", blogs);
     dispatch(setBlogs(blogs));
   } catch (error) {
     console.error("Failed to fetch blogs:", error);
+  }
+};
+
+export const createBlog = (blog) => async (dispatch) => {
+  try {
+    const newBlog = await blogService.create(blog);
+    dispatch(appendBlogs(newBlog));
+  } catch (e) {
+    console.error("Failed to create blog:", e);
+    throw e;
+  }
+};
+
+export const deleteBlog = (id) => async (dispatch) => {
+  try {
+    await blogService.remove(id);
+    dispatch(removeBlog(id));
+  } catch (error) {
+    console.error("Failed to delete blog:", error);
   }
 };
 

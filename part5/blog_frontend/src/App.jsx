@@ -8,7 +8,7 @@ import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import { showNotification } from "./reducers/notificationReducer";
-import { getBlogs } from "./reducers/blogReducer";
+import { createBlog, getBlogs } from "./reducers/blogReducer";
 
 function App() {
   const blogs = useSelector((state) => state.blogs);
@@ -76,11 +76,10 @@ function App() {
     window.localStorage.clear();
     setUser(null);
   };
-  const handleCreate = async ({ title, author, url }) => {
+  const handleCreate = ({ title, author, url }) => {
     try {
       blogFormRef.current.toggleVisibility();
-      await blogService.create({ title, author, url });
-      dispatch(getBlogs());
+      dispatch(createBlog({ title, author, url }));
       dispatch(
         showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
       );
