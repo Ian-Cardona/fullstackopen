@@ -21,7 +21,6 @@ test("renders content", () => {
   const titleAuthorElement = screen.getByText("React patterns Michael Chan");
   expect(titleAuthorElement).toBeDefined();
 
-  // in the same element, maybe with a <br /> between them
   const urlLikesElement = screen.queryByText(
     (content) =>
       content.includes("https://reactpatterns.com/") &&

@@ -14,12 +14,11 @@ const blogSlice = createSlice({
     updateBlogs(state, action) {
       const updated = action.payload;
       return state
-        .map((blog) => (blog.id === updated.id ? updated : blog))
-        .sort((a, b) => b.votes - a.votes);
+        .map((blog) => (blog._id === updated._id ? updated : blog))
+        .sort((a, b) => b.likes - a.likes);
     },
     removeBlog(state, action) {
-      console.log("action id", action.payload);
-      return state.filter((blog) => blog.id !== action.payload);
+      return state.filter((blog) => blog._id !== action.payload);
     },
   },
 });
@@ -38,6 +37,7 @@ export const getBlogs = () => async (dispatch) => {
 
 export const createBlog = (blog) => async (dispatch) => {
   try {
+    console.log("create blog");
     const newBlog = await blogService.create(blog);
     dispatch(appendBlogs(newBlog));
   } catch (e) {
@@ -52,6 +52,17 @@ export const deleteBlog = (id) => async (dispatch) => {
     dispatch(removeBlog(id));
   } catch (error) {
     console.error("Failed to delete blog:", error);
+    throw error;
+  }
+};
+
+export const updateBlog = (blog) => async (dispatch) => {
+  try {
+    const updated = await blogService.update(blog._id, blog);
+    dispatch(updateBlogs(updated));
+  } catch (error) {
+    console.error("Failed to update blog:", error);
+    throw error;
   }
 };
 

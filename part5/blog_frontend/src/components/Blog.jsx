@@ -1,14 +1,23 @@
 import Togglable from "./Togglable";
 import BlogDetails from "./BlogDetails";
 import { useDispatch } from "react-redux";
-import { deleteBlog } from "../reducers/blogReducer";
+import { deleteBlog, updateBlogs } from "../reducers/blogReducer";
 
-const Blog = ({ blog, user, handleLike }) => {
+const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
   const handleRemove = async () => {
     if (window.confirm("Are you sure?")) {
-      dispatch(deleteBlog(blog._id));
+      await dispatch(deleteBlog(blog._id));
     }
+  };
+
+  const handleLike = async (blog) => {
+    console.log("blog", blog);
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
+    await dispatch(updateBlogs(updatedBlog));
   };
 
   const blogStyle = {

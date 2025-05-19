@@ -1,13 +1,41 @@
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../reducers/loginReducer";
+import blogService from "../services/blogs";
+import { useState } from "react";
 
-const LoginForm = ({
-  handleLogin,
-  handleUsernameChange,
-  handlePasswordChange,
-  username,
-  password,
-  errorMessage,
-}) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const user = await dispatch(loginUser({ username, password }));
+      console.log(user);
+      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      setUsername("");
+      setPassword("");
+    } catch (exception) {
+      const errorMsg = exception.response
+        ? exception.response.data.error
+        : "Something went wrong";
+      setErrorMessage(errorMsg);
+      setTimeout(() => setErrorMessage(null), 5000);
+    }
+  };
+
+  const handleUsernameChange = (value) => {
+    setUsername(value);
+  };
+
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+  };
+
   return (
     <div>
       <h2>Log in to application</h2>
@@ -47,7 +75,7 @@ LoginForm.propTypes = {
   handlePasswordChange: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
-  errorMessage: PropTypes.string, // <-- New prop type
+  errorMessage: PropTypes.string,
 };
 
 export default LoginForm;
