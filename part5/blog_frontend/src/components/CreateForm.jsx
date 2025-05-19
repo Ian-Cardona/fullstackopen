@@ -1,13 +1,32 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { showNotification } from "../reducers/notificationReducer";
 
-const CreateForm = ({ handleCreate }) => {
+const CreateForm = ({ blogFormRef }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleCreate = async ({ title, author, url }) => {
+    try {
+      blogFormRef.current.toggleVisibility();
+      await dispatch(createBlog({ title, author, url }));
+      dispatch(
+        showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
+      );
+    } catch (e) {
+      const errorMsg =
+        e?.response?.data?.error || e?.message || "Something went wrong";
+      const errorCode = e?.response?.status || 500;
+      dispatch(showNotification(errorMsg, errorCode, 5));
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    handleCreate({
+    await handleCreate({
       title,
       author,
       url,
