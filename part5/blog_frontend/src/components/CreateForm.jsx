@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
-import { showNotification } from "../reducers/notificationReducer";
+import { useNotificationDispatch } from "../hooks/useNotification";
+// import { showNotification } from "../reducers/notificationReducer";
 
 const CreateForm = ({ blogFormRef }) => {
-  const dispatch = useDispatch();
+  const dispatch = useNotificationDispatch();
+  // const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -14,13 +16,27 @@ const CreateForm = ({ blogFormRef }) => {
       blogFormRef.current.toggleVisibility();
       await dispatch(createBlog({ title, author, url }));
       dispatch(
-        showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
+        {
+          type: "SET",
+          payload: {
+            statusCode: 200,
+            message: `A new blog ${title} by ${author} created!`,
+          },
+        }
+        // showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
       );
+      setTimeout(() => {
+        dispatch({ type: "CLEAR" });
+      }, 5000);
     } catch (e) {
       const errorMsg =
         e?.response?.data?.error || e?.message || "Something went wrong";
       const errorCode = e?.response?.status || 500;
-      dispatch(showNotification(errorMsg, errorCode, 5));
+      // dispatch(showNotification(errorMsg, errorCode, 5));
+      dispatch(
+        { type: "ERROR", payload: { statusCode: errorCode, message: errorMsg } }
+        // showNotification(`A new blog ${title} by ${author} created!`, 200, 5)
+      );
     }
   };
 

@@ -53,7 +53,7 @@ function App() {
         <button onClick={handleLogout}>Logout</button>
       </div>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <CreateForm />
+        <CreateForm blogFormRef={blogFormRef} />
       </Togglable>
       {!blogs || blogs.length === 0 ? (
         <p>No blogs</p>
