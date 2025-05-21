@@ -1,33 +1,33 @@
-import { createContext, useReducer } from "react";
+// import { createContext, useReducer } from "react";
 
-const blogReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_BLOGS":
-      return action.payload;
-    case "APPEND_BLOGS":
-      return action.payload;
-    case "UPDATE_BLOGS":
-      return action.payload;
-    default:
-      return state;
-  }
-};
+// const blogReducer = (state, action) => {
+//   switch (action.type) {
+//     case "SET_BLOGS":
+//       return action.payload;
+//     case "APPEND_BLOGS":
+//       state.push(action.payload);
+//       return state.sort((a, b) => b.votes - a.votes);
+//     case "UPDATE_BLOGS": {
+//       const updated = action.payload;
+//       return state
+//         .map((blog) => (blog._id === updated._id ? updated : blog))
+//         .sort((a, b) => b.likes - a.likes);
+//     }
+//     default:
+//       return state;
+//   }
+// };
 
-const BlogContext = createContext();
+// const BlogContext = createContext();
 
-export const BlogContextProvider = (props) => {
-  const [blog, blogDispatch] = useReducer(blogReducer, {
-    title: "",
-    author: "",
-    url: "",
-    likes: 0,
-  });
+// export const BlogContextProvider = (props) => {
+//   const [blogs, blogDispatch] = useReducer(blogReducer, []);
 
-  return (
-    <BlogContext.Provider value={[blog, blogDispatch]}>
-      {props.children}
-    </BlogContext.Provider>
-  );
-};
+//   return (
+//     <BlogContext.Provider value={[blogs, blogDispatch]}>
+//       {props.children}
+//     </BlogContext.Provider>
+//   );
+// };
 
-export default BlogContext;
+// export default BlogContext;
