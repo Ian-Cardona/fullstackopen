@@ -1,12 +1,27 @@
 import { useState } from "react";
 // import { useDispatch } from "react-redux";
-import { createBlog } from "../reducers/blogReducer";
+// import { createBlog } from "../reducers/blogReducer";
 import { useNotificationDispatch } from "../hooks/useNotification";
+// import { useBlogDispatch } from "../hooks/useBlogs";
+import blogService from "../services/blogs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import { showNotification } from "../reducers/notificationReducer";
 
 const CreateForm = ({ blogFormRef }) => {
+  const queryClient = useQueryClient();
   const dispatch = useNotificationDispatch();
+  // const blogDispatch = useBlogDispatch();
+
+  const createBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"]) || [];
+      queryClient.setQueryData(["blogs"], blogs.concat(newBlog));
+      // blogDispatch({ type: "APPEND_BLOGS", payload: updatedBlogs });
+    },
+  });
   // const dispatch = useDispatch();
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -14,7 +29,9 @@ const CreateForm = ({ blogFormRef }) => {
   const handleCreate = async ({ title, author, url }) => {
     try {
       blogFormRef.current.toggleVisibility();
-      await dispatch(createBlog({ title, author, url }));
+      // await dispatch(createBlog({ title, author, url }));
+      createBlogMutation.mutate({ title, author, url });
+
       dispatch(
         {
           type: "SET",

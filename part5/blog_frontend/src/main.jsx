@@ -5,6 +5,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationContextProvider } from "./reducers/NotificationContext";
 import store from "./store";
+// import { BlogContextProvider } from "./reducers/blogContext";
 
 // ReactDOM.createRoot(document.getElementById("root")).render(
 //   <Provider store={store}>
@@ -17,9 +18,11 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <QueryClientProvider client={queryClient}>
+      {/* <BlogContextProvider> */}
       <NotificationContextProvider>
         <App />
       </NotificationContextProvider>
+      {/* </BlogContextProvider> */}
     </QueryClientProvider>
   </Provider>
 );

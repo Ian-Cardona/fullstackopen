@@ -6,23 +6,52 @@ import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
-import { getBlogs } from "./reducers/blogReducer";
+// import { getBlogs } from "./reducers/blogReducer";
 import { clearUser, setUser } from "./reducers/loginReducer";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+// import { useBlogDispatch, useBlogValue } from "./hooks/useBlogs";
 
 function App() {
-  const blogs = useSelector((state) => state.blogs);
+  const queryClient = useQueryClient();
+
+  // const blogs = useBlogValue();
+  // const blogDispatch = useBlogDispatch();
+
+  // const getBlogsMutation = useMutation({
+  //   mutationFn: blogService.getAll,
+  //   onSuccess: (newBlogs) => {
+  //     queryClient.setQueryData(["blogs"], newBlogs);
+  //     blogDispatch({ type: "SET_BLOGS", payload: newBlogs });
+  //   },
+  // });
+
+  const {
+    data: blogs = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAll,
+  });
+
+  // const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.login);
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+  // const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
   const blogFormRef = useRef();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await dispatch(getBlogs());
-    };
-    fetchData();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await dispatch(getBlogs());
+  //   };
+  //   fetchData();
+  // }, [dispatch]);
+
+  // useEffect(() => {
+  //   getBlogsMutation.mutate();
+  //   console.log(blogs);
+  // }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInUser");
@@ -38,10 +67,19 @@ function App() {
   const handleLogout = () => {
     window.localStorage.clear();
     dispatch(clearUser());
+    queryClient.clear(); // Optional: clears React Query cache on logout
   };
 
   if (!user) {
     return <LoginForm />;
+  }
+
+  if (isLoading) {
+    return <p>Loading blogs...</p>;
+  }
+
+  if (isError) {
+    return <p>Error loading blogs.</p>;
   }
 
   return (
@@ -58,7 +96,7 @@ function App() {
       {!blogs || blogs.length === 0 ? (
         <p>No blogs</p>
       ) : (
-        sortedBlogs.map((blog) => (
+        blogs.map((blog) => (
           <div key={blog._id}>
             <Blog blog={blog} user={user} />
           </div>
