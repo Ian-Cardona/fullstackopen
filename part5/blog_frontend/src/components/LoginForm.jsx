@@ -1,31 +1,40 @@
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../reducers/loginReducer";
+// import { useDispatch } from "react-redux";
+// import { loginUser } from "../reducers/loginReducer";
 import blogService from "../services/blogs";
 import { useState } from "react";
+import { useLoginDispatch } from "../hooks/useLogin";
+import loginService from "../services/login";
+import { useMutation } from "@tanstack/react-query";
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await dispatch(loginUser({ username, password }));
-      console.log(user);
-      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
-      blogService.setToken(user.token);
+  const loginDispatch = useLoginDispatch();
+  const loginMutation = useMutation({
+    mutationFn: loginService.login,
+    onSuccess: (loggedInUser) => {
+      loginDispatch({ type: "SET_USER", payload: loggedInUser });
+      window.localStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+      blogService.setToken(loggedInUser.token);
       setUsername("");
       setPassword("");
-    } catch (exception) {
-      const errorMsg = exception.response
-        ? exception.response.data.error
+    },
+    onError: (error) => {
+      const errorMsg = error.response
+        ? error.response.data.error
         : "Something went wrong";
       setErrorMessage(errorMsg);
       setTimeout(() => setErrorMessage(null), 5000);
-    }
+    },
+  });
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    loginMutation.mutate({ username, password });
   };
 
   const handleUsernameChange = (value) => {

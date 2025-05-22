@@ -1,19 +1,19 @@
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import Notification from "./components/Notification";
 import CreateForm from "./components/CreateForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
+
 // import { getBlogs } from "./reducers/blogReducer";
-import { clearUser, setUser } from "./reducers/loginReducer";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+// import { clearUser, setUser } from "./reducers/loginReducer";
+import { useQuery } from "@tanstack/react-query";
+import { useLoginDispatch, useLoginValue } from "./hooks/useLogin";
 // import { useBlogDispatch, useBlogValue } from "./hooks/useBlogs";
 
 function App() {
-  const queryClient = useQueryClient();
-
   // const blogs = useBlogValue();
   // const blogDispatch = useBlogDispatch();
 
@@ -25,6 +25,10 @@ function App() {
   //   },
   // });
 
+  // const user = useSelector((state) => state.login);
+  const user = useLoginValue();
+  const loginDispatch = useLoginDispatch();
+
   const {
     data: blogs = [],
     isLoading,
@@ -32,14 +36,14 @@ function App() {
   } = useQuery({
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
+    // enabled: !!user,
   });
 
   // const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.login);
   // const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
   const blogFormRef = useRef();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -55,19 +59,21 @@ function App() {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedInUser");
-    try {
-      const user = JSON.parse(loggedUserJSON);
-      dispatch(setUser(user));
-      blogService.setToken(user.token);
-    } catch (e) {
-      localStorage.removeItem("loggedInUser");
+    if (loggedUserJSON) {
+      try {
+        const user = JSON.parse(loggedUserJSON);
+        blogService.setToken(user.token);
+        loginDispatch({ type: "SET_USER", payload: user });
+      } catch {
+        window.localStorage.removeItem("loggedInUser");
+      }
     }
-  }, [dispatch]);
+  }, [loginDispatch]);
 
   const handleLogout = () => {
     window.localStorage.clear();
-    dispatch(clearUser());
-    queryClient.clear(); // Optional: clears React Query cache on logout
+    // dispatch(clearUser());
+    loginDispatch({ type: "CLEAR_USER" });
   };
 
   if (!user) {
