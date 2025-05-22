@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationContextProvider } from "./reducers/NotificationContext";
 import store from "./store";
 import { LoginContextProvider } from "./reducers/LoginContext";
+import { BrowserRouter as Router } from "react-router-dom";
 // import { BlogContextProvider } from "./reducers/blogContext";
 
 // ReactDOM.createRoot(document.getElementById("root")).render(
@@ -22,7 +23,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       {/* <BlogContextProvider> */}
       <LoginContextProvider>
         <NotificationContextProvider>
-          <App />
+          <Router>
+            <App />
+          </Router>
         </NotificationContextProvider>
       </LoginContextProvider>
       {/* </BlogContextProvider> */}

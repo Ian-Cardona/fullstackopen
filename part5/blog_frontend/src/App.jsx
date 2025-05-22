@@ -11,6 +11,10 @@ import LoginForm from "./components/LoginForm";
 // import { clearUser, setUser } from "./reducers/loginReducer";
 import { useQuery } from "@tanstack/react-query";
 import { useLoginDispatch, useLoginValue } from "./hooks/useLogin";
+import { Routes, Route, Link } from "react-router-dom";
+import Users from "./components/Users";
+import UserInfo from "./components/UserInfo";
+import BlogInfo from "./components/BlogInfo";
 // import { useBlogDispatch, useBlogValue } from "./hooks/useBlogs";
 
 function App() {
@@ -89,26 +93,60 @@ function App() {
   }
 
   return (
-    <div>
-      <h2>Blogs</h2>
-      <Notification />
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <p>{user.name} is logged in</p>
-        <button onClick={handleLogout}>Logout</button>
+    <>
+      <div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            background: "lightGray",
+          }}
+        >
+          <Link style={{ marginRight: "4px" }} to="/">
+            blogs
+          </Link>
+          <Link style={{ marginRight: "4px" }} to="/users">
+            users
+          </Link>
+          <p style={{ marginRight: "4px" }}>{user.name} is logged in</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+        <h2>blog app</h2>
+        <Notification />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                  <CreateForm blogFormRef={blogFormRef} />
+                </Togglable>
+                {!blogs || blogs.length === 0 ? (
+                  <p>No blogs</p>
+                ) : (
+                  blogs.map((blog) => (
+                    <div
+                      key={blog._id}
+                      style={{
+                        border: "1px solid black",
+                        paddingTop: "10px",
+                        margin: "4px",
+                      }}
+                    >
+                      {/* <Blog blog={blog} user={user} /> */}
+                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                    </div>
+                  ))
+                )}
+              </>
+            }
+          />
+          <Route path="/blogs/:id" element={<BlogInfo />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserInfo />} />
+        </Routes>
       </div>
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <CreateForm blogFormRef={blogFormRef} />
-      </Togglable>
-      {!blogs || blogs.length === 0 ? (
-        <p>No blogs</p>
-      ) : (
-        blogs.map((blog) => (
-          <div key={blog._id}>
-            <Blog blog={blog} user={user} />
-          </div>
-        ))
-      )}
-    </div>
+    </>
   );
 }
 
