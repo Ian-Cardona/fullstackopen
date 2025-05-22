@@ -3,14 +3,14 @@ const BlogDetails = ({ blog, user, likes, onLike, onRemove }) => {
 
   return (
     <div>
-      {blog.url}
+      <a href={blog.url}>{blog.url}</a>
       <br />
-      likes {likes}{" "}
+      {likes} likes{" "}
       <button className="button-like" onClick={onLike}>
         like
       </button>
       <br />
-      {blog.user?.name}
+      {!blog.user ? null : <>Added by {blog.user?.name}</>}
       <br />
       {isUser && (
         <div>

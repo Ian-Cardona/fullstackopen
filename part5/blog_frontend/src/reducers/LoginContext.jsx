@@ -3,6 +3,7 @@ import { createContext, useReducer } from "react";
 const loginReducer = (state, action) => {
   switch (action.type) {
     case "SET_USER":
+      console.log("payload", action.payload);
       return action.payload;
     case "CLEAR_USER":
       return null;
@@ -21,9 +22,9 @@ export const LoginContextProvider = (props) => {
   });
 
   return (
-    <NotificationContext.Provider value={[login, loginDispatch]}>
+    <LoginContext.Provider value={[login, loginDispatch]}>
       {props.children}
-    </NotificationContext.Provider>
+    </LoginContext.Provider>
   );
 };
 
