@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import BlogDetails from "./BlogDetails";
 import blogService from "../services/blogs";
 import { useLoginValue } from "../hooks/useLogin";
+import Comments from "./Comments";
 
 const BlogInfo = () => {
   const { id } = useParams();
@@ -26,6 +27,12 @@ const BlogInfo = () => {
       queryClient.invalidateQueries(["blogs"]);
     },
   });
+  const commentBlogMutation = useMutation({
+    mutationFn: blogService.addComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+    },
+  });
 
   const handleRemove = async () => {
     if (window.confirm("Are you sure?")) {
@@ -41,6 +48,12 @@ const BlogInfo = () => {
     likeBlogMutation.mutate(updatedBlog);
   };
 
+  const handleComment = async (event) => {
+    event.preventDefault();
+    const comment = event.target.comment.value;
+    commentBlogMutation.mutate({ id: blog._id, comment });
+  };
+
   if (!blog) return null;
 
   return (
@@ -53,6 +66,7 @@ const BlogInfo = () => {
         onLike={() => handleLike(blog)}
         onRemove={handleRemove}
       />
+      <Comments handleComment={handleComment} blog={blog} />
     </div>
   );
 };
