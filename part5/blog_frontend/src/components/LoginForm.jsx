@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useLoginDispatch } from "../hooks/useLogin";
 import loginService from "../services/login";
 import { useMutation } from "@tanstack/react-query";
+import { Form, Button, Alert } from "react-bootstrap";
 
 const LoginForm = () => {
   // const dispatch = useDispatch();
@@ -46,34 +47,40 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
+    <div className="mt-4" style={{ maxWidth: "400px", margin: "0 auto" }}>
       <h2>Log in to application</h2>
       {errorMessage && (
-        <div style={{ color: "red", marginBottom: "10px" }}>{errorMessage}</div>
+        <Alert variant="danger" className="mt-3">
+          {errorMessage}
+        </Alert>
       )}
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
+      <Form onSubmit={handleLogin}>
+        <Form.Group className="mb-3" controlId="login-username">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
             data-testid="username"
             type="text"
             value={username}
             name="Username"
             onChange={({ target }) => handleUsernameChange(target.value)}
           />
-        </div>
-        <div>
-          password
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="login-password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
             data-testid="password"
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => handlePasswordChange(target.value)}
           />
-        </div>
-        <button type="submit">login</button>
-      </form>
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          login
+        </Button>
+      </Form>
     </div>
   );
 };

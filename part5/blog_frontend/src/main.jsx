@@ -7,6 +7,7 @@ import { NotificationContextProvider } from "./reducers/NotificationContext";
 import store from "./store";
 import { LoginContextProvider } from "./reducers/LoginContext";
 import { BrowserRouter as Router } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 // import { BlogContextProvider } from "./reducers/blogContext";
 
 // ReactDOM.createRoot(document.getElementById("root")).render(
