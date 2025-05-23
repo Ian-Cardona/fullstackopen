@@ -15,6 +15,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Users from "./components/Users";
 import UserInfo from "./components/UserInfo";
 import BlogInfo from "./components/BlogInfo";
+import { Button, Container, Nav, Navbar, Table } from "react-bootstrap";
 // import { useBlogDispatch, useBlogValue } from "./hooks/useBlogs";
 
 function App() {
@@ -93,60 +94,59 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "lightGray",
-          }}
-        >
-          <Link style={{ marginRight: "4px" }} to="/">
-            blogs
-          </Link>
-          <Link style={{ marginRight: "4px" }} to="/users">
-            users
-          </Link>
-          <p style={{ marginRight: "4px" }}>{user.name} is logged in</p>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-        <h2>blog app</h2>
-        <Notification />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                  <CreateForm blogFormRef={blogFormRef} />
-                </Togglable>
-                {!blogs || blogs.length === 0 ? (
-                  <p>No blogs</p>
-                ) : (
-                  blogs.map((blog) => (
-                    <div
-                      key={blog._id}
-                      style={{
-                        border: "1px solid black",
-                        paddingTop: "10px",
-                        margin: "4px",
-                      }}
-                    >
-                      {/* <Blog blog={blog} user={user} /> */}
-                      <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
-                    </div>
-                  ))
-                )}
-              </>
-            }
-          />
-          <Route path="/blogs/:id" element={<BlogInfo />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/:id" element={<UserInfo />} />
-        </Routes>
-      </div>
-    </>
+    <Container>
+      <Navbar expand="lg" className="mb-4 shadow-sm">
+        <Container>
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/">
+              Blogs
+            </Nav.Link>
+            <Nav.Link as={Link} to="/users">
+              Users
+            </Nav.Link>
+          </Nav>
+          <Nav className="ms-auto align-items-center">
+            <Navbar.Text className="me-3">{user.name} is logged in</Navbar.Text>
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Nav>
+        </Container>
+      </Navbar>
+      <h2>blog app</h2>
+      <Notification />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <CreateForm blogFormRef={blogFormRef} />
+              </Togglable>
+
+              {!blogs || blogs.length === 0 ? (
+                <p>No blogs</p>
+              ) : (
+                <Table striped bordered hover>
+                  <tbody>
+                    {blogs.map((blog) => (
+                      <tr key={blog._id}>
+                        <td>
+                          <Link to={`/blogs/${blog._id}`}>{blog.title}</Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </>
+          }
+        />
+        <Route path="/blogs/:id" element={<BlogInfo />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserInfo />} />
+      </Routes>
+    </Container>
   );
 }
 

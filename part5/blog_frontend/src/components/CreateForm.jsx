@@ -5,6 +5,8 @@ import { useNotificationDispatch } from "../hooks/useNotification";
 // import { useBlogDispatch } from "../hooks/useBlogs";
 import blogService from "../services/blogs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { Form } from "react-router-dom";
+import { Form, Button, InputGroup, FormControl, Card } from "react-bootstrap";
 // import { showNotification } from "../reducers/notificationReducer";
 
 const CreateForm = ({ blogFormRef }) => {
@@ -70,42 +72,45 @@ const CreateForm = ({ blogFormRef }) => {
   };
 
   return (
-    <div>
+    <Card className="p-3 mb-4 shadow-sm">
       <h2>create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          title
-          <input
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>title</Form.Label>
+          <FormControl
             type="text"
             value={title}
             name="title"
             id="cb-title-field"
             onChange={({ target }) => setTitle(target.value)}
+            placeholder="Enter blog title"
           />
-        </div>
-        <div>
-          author
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>author</Form.Label>
+          <FormControl
             type="text"
             value={author}
             name="author"
             id="cb-author-field"
             onChange={({ target }) => setAuthor(target.value)}
+            placeholder="Enter author name"
           />
-        </div>
-        <div>
-          url
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>url</Form.Label>
+          <FormControl
             type="text"
             value={url}
             name="url"
             id="cb-url-field"
             onChange={({ target }) => setUrl(target.value)}
+            placeholder="Enter blog URL"
           />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
+        </Form.Group>
+        <Button type="submit">create</Button>
+      </Form>
+    </Card>
   );
 };
 
