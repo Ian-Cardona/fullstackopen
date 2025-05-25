@@ -7,9 +7,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "ts-node": "ts-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "ts-node": "^10.9.2"
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
