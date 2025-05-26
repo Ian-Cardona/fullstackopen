@@ -1,3 +1,10 @@
+import { isNotNumber } from './utils';
+
+interface WeeklyHour {
+  target: number;
+  dailyHours: number[];
+}
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -8,9 +15,23 @@ interface Result {
   average: number;
 }
 
+const parseArguments = (args: string[]): WeeklyHour => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+
+  const dailyHourArgs = args.slice(3);
+  if (isNotNumber(args[2]) || dailyHourArgs.some(isNotNumber)) {
+    throw new Error('Provided values were not numbers!');
+  }
+
+  return {
+    target: Number(args[2]),
+    dailyHours: dailyHourArgs.map(Number),
+  };
+};
+
 const calculateExercises = (
-  dailyExerciseHours: number[],
   targetAmount: number,
+  dailyExerciseHours: number[],
 ): Result => {
   const average =
     dailyExerciseHours.reduce((a, b) => a + b) / dailyExerciseHours.length;
@@ -38,6 +59,17 @@ const calculateExercises = (
   return result;
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 1));
-console.log(calculateExercises([0, 0, 0, 0, 0, 0, 0], 1));
+try {
+  const { target, dailyHours } = parseArguments(process.argv);
+  console.log(calculateExercises(target, dailyHours));
+} catch (error: unknown) {
+  let errorMessage = 'Something wrong!';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+    console.log(errorMessage);
+  }
+}
+
+// console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+// console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 1));
+// console.log(calculateExercises([0, 0, 0, 0, 0, 0, 0], 1));
