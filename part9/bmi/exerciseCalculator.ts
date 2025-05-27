@@ -29,7 +29,7 @@ const parseArguments = (args: string[]): WeeklyHour => {
   };
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   targetAmount: number,
   dailyExerciseHours: number[],
 ): Result => {
@@ -59,14 +59,16 @@ const calculateExercises = (
   return result;
 };
 
-try {
-  const { target, dailyHours } = parseArguments(process.argv);
-  console.log(calculateExercises(target, dailyHours));
-} catch (error: unknown) {
-  let errorMessage = 'Something wrong!';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
-    console.log(errorMessage);
+if (require.main === module) {
+  try {
+    const { target, dailyHours } = parseArguments(process.argv);
+    console.log(calculateExercises(target, dailyHours));
+  } catch (error: unknown) {
+    let errorMessage = 'Something wrong!';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+      console.log(errorMessage);
+    }
   }
 }
 
