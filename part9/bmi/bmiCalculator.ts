@@ -47,13 +47,16 @@ export const calculateBmi = (
   }
 };
 
-try {
-  const { height, weight } = parseArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = 'Something wrong!';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
-    console.log(errorMessage);
+if (require.main === module) {
+  console.log('Run directly from command line');
+  try {
+    const { height, weight } = parseArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error: unknown) {
+    let errorMessage = 'Something wrong!';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+      console.log(errorMessage);
+    }
   }
 }

@@ -9,16 +9,15 @@ app.set('query parser', (str: string) => qs.parse(str, { parameterLimit: 2 }));
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
 });
+
 app.get('/bmi', (req, res) => {
   try {
     const { height, weight } = req.query;
-    const parsedHeight = parseFloat(height as string);
-    const parsedWeight = parseFloat(weight as string);
-
+    const parsedHeight = Number(height);
+    const parsedWeight = Number(weight);
     if (isNaN(parsedHeight) || isNaN(parsedWeight)) {
-      return res.send({ error: 'malformatted parameters' });
+      throw new Error('malformatted parameters');
     }
-
     const bmi = calculateBmi(parsedHeight, parsedWeight);
     res.send(bmi);
   } catch (error) {
