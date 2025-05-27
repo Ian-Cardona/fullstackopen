@@ -5,6 +5,12 @@ interface MeasuredValues {
   weight: number;
 }
 
+interface ResponseValues {
+  weight: number;
+  height: number;
+  bmi: string;
+}
+
 const parseArguments = (args: string[]): MeasuredValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('Too many arguments');
@@ -19,17 +25,25 @@ const parseArguments = (args: string[]): MeasuredValues => {
   }
 };
 
-const calculateBmi = (heightInCm: number, weightInKg: number): string => {
+export const calculateBmi = (
+  heightInCm: number,
+  weightInKg: number,
+): ResponseValues => {
   const bmi = weightInKg / Math.pow(heightInCm / 100, 2);
+  const input = {
+    weight: weightInKg,
+    height: heightInCm,
+    bmi: null,
+  };
 
   if (bmi < 18.5) {
-    return 'Underweight';
+    return { ...input, bmi: 'Underweight' };
   } else if (bmi < 25) {
-    return 'Normal range';
+    return { ...input, bmi: 'Normal range' };
   } else if (bmi < 30) {
-    return 'Overweight';
+    return { ...input, bmi: 'Overweight' };
   } else {
-    return 'Obese';
+    return { ...input, bmi: 'Obese' };
   }
 };
 
