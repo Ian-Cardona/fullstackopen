@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/patients
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Ian Cardona",
+    "dateOfBirth": "Today",
+    "ssn": "DRAIN_GANG",
+    "gender": "Male",
+    "occupation": "Drainer"
+}

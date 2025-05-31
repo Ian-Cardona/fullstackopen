@@ -19,13 +19,16 @@ router.get('/:id', (req, res: Response<NonSensitivePatientEntry>) => {
     };
 });
 
-// router.post('/', (req, res) => {
-//     const {body} = req;
+router.post('/', (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const {name, dateOfBirth, ssn, gender, occupation} = req.body;
 
-//     console.log(body);
-// })
-// // router.post('/', (req, res) => {
+    const addedEntry = patientService.postAddPatient(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        {name, dateOfBirth, ssn, gender, occupation}
+    );
 
-// // })
+    res.json(addedEntry);
+});
 
 export default router;

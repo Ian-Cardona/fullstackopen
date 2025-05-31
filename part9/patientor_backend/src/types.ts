@@ -15,6 +15,10 @@ interface PatientEntry {
 
 type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
 
+interface NewPatientEntry {
+    name: string, dateOfBirth: string, ssn: string, gender: string, occupation: string
+}
+
 export {
-    Diagnosis, PatientEntry, NonSensitivePatientEntry
+    Diagnosis, PatientEntry, NonSensitivePatientEntry, NewPatientEntry
 };
