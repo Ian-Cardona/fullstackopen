@@ -4,7 +4,7 @@ interface Diagnosis {
     latin?: string
 };
 
-interface Patient {
+interface PatientEntry {
    id: string,
    name: string,
    dateOfBirth: string,
@@ -13,8 +13,12 @@ interface Patient {
    occupation: string
 };
 
-type NonSensitivePatient = Omit<Patient, 'ssn'>;
+type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
+
+interface NewPatientEntry {
+    name: string, dateOfBirth: string, ssn: string, gender: string, occupation: string
+}
 
 export {
-    Diagnosis, Patient, NonSensitivePatient
+    Diagnosis, PatientEntry, NonSensitivePatientEntry, NewPatientEntry
 };
