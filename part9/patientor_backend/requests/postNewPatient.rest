@@ -6,6 +6,6 @@ Accept: application/json
     "name": "Ian Cardona",
     "dateOfBirth": "Today",
     "ssn": "DRAIN_GANG",
-    "gender": "Male",
+    "gender": "male",
     "occupation": "Drainer"
 }
