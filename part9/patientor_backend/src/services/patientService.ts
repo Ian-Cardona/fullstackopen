@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import patientsData from '../../data/patients';
 
-import { NewPatientEntry, NonSensitivePatientEntry, PatientEntry } from '../types';
+import { NewPatientEntry, NonSensitivePatientEntry, parseGender, parseString, PatientEntry } from '../types';
 
 const getPatients = (): PatientEntry[] => {
     return patientsData;
@@ -20,10 +20,30 @@ const getPatientsEntryById = (id: string): NonSensitivePatientEntry | undefined 
    return {id: patientId, name, dateOfBirth, gender, occupation};
 };
 
+const toNewPatientEntry = (object: unknown): NewPatientEntry => {
+    if (!object || typeof object!=='object') {
+        throw new Error('Incorrect or missing data');
+    }
+
+    if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
+    const newEntry: NewPatientEntry = {
+        name: parseString(object.name),
+        dateOfBirth: parseString(object.dateOfBirth),
+        ssn: parseString(object.ssn),
+        gender: parseGender(object.gender),
+        occupation: parseString(object.occupation)
+    };
+
+    return newEntry;
+    }
+
+    throw new Error('Incorrect data: some fields are missing');
+};
+
 const postAddPatient = (entry: NewPatientEntry): PatientEntry => {
     const newPatientEntry = {
-        id: uuidv4(),
-        ...entry
+        id: uuidv4(),        
+        ...toNewPatientEntry(entry)
     };
 
     patientsData.push(newPatientEntry);
