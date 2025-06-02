@@ -1,46 +1,52 @@
 import { v4 as uuidv4 } from 'uuid';
 import patientsData from '../../data/patients';
 
-import { NewPatientEntry, NonSensitivePatientEntry, parseGender, parseString, PatientEntry } from '../types';
+import { NewPatientEntry, NonSensitivePatientEntry, PatientEntry } from '../types';
+import { newPatientSchema, nonSensitivePatientEntrySchema, patientEntrySchema } from '../utils';
 
 const getPatients = (): PatientEntry[] => {
-    return patientsData;
+    return patientsData.map((patient) => patientEntrySchema.parse(patient));
 };
 
 const getPatientsEntries = ():  NonSensitivePatientEntry[] => {
-    return patientsData.map(({id, name, dateOfBirth, gender, occupation}) => ({
-        id, name, dateOfBirth, gender, occupation,
-    }));
+    return patientsData.map((patient) => nonSensitivePatientEntrySchema.parse(patient));
 };
 
 const getPatientsEntryById = (id: string): NonSensitivePatientEntry | undefined => {
    const patient = patientsData.find((entry) => entry.id === id);
    if (!patient) return undefined;
-   const { id: patientId, name, dateOfBirth, gender, occupation} = patient;
-   return {id: patientId, name, dateOfBirth, gender, occupation};
+   return nonSensitivePatientEntrySchema.parse(patient);
 };
 
 const toNewPatientEntry = (object: unknown): NewPatientEntry => {
-    if (!object || typeof object!=='object') {
-        throw new Error('Incorrect or missing data');
-    }
+    // if (!object || typeof object!=='object') {
+    //     throw new Error('Incorrect or missing data');
+    // }
 
-    if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
-    const newEntry: NewPatientEntry = {
-        name: parseString(object.name),
-        dateOfBirth: parseString(object.dateOfBirth),
-        ssn: parseString(object.ssn),
-        gender: parseGender(object.gender),
-        occupation: parseString(object.occupation)
-    };
+    // if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
+    // const newEntry: NewPatientEntry = {
+    //     name: parseString(object.name),
+    //     dateOfBirth: parseString(object.dateOfBirth),
+    //     ssn: parseString(object.ssn),
+    //     gender: parseGender(object.gender),
+    //     occupation: parseString(object.occupation)
+    // };
 
-    return newEntry;
-    }
+    // const newEntry: NewPatientEntry = {
+    //     name: z.string().parse(object.name),
+    //     dateOfBirth: z.string().parse(object.dateOfBirth),
+    //     ssn: z.string().parse(object.ssn),
+    //     gender: z.nativeEnum(Gender).parse(object.gender),
+    //     occupation: z.string().parse(object.occupation)
+    // };
 
-    throw new Error('Incorrect data: some fields are missing');
+    return newPatientSchema.parse(object);
+    // }
+
+    // throw new Error('Incorrect data: some fields are missing');
 };
 
-const postAddPatient = (entry: NewPatientEntry): PatientEntry => {
+const postAddPatient = (entry: unknown): PatientEntry => {
     const newPatientEntry = {
         id: uuidv4(),        
         ...toNewPatientEntry(entry)

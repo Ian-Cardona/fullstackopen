@@ -1,54 +1,59 @@
-enum Gender {
+import { z } from "zod";
+import { newPatientSchema } from "./utils";
+
+export enum Gender {
     Male = "male",
     Female = "female",
-    Others = "others"
+    Others = "other"
 };
 
-interface Diagnosis {
+export interface Diagnosis {
     code: string,
     name: string,
     latin?: string
 };
 
-interface PatientEntry {
-   id: string,
-   name: string,
-   dateOfBirth: string,
-   ssn: string,
-   gender: string,
-   occupation: string
-};
-
-type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
-
-interface NewPatientEntry {
-    name: string, dateOfBirth: string, ssn: string, gender: Gender, occupation: string
+export type NewPatientEntry = z.infer<typeof newPatientSchema>;
+export interface PatientEntry extends NewPatientEntry {
+    id: string;
 }
 
-const isString = (text: unknown): text is string => {
- return typeof text === 'string' || text instanceof String;
-};
+export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
 
-const parseString = (value: unknown): string => {
-    if (!value || !isString(value)) {
-        throw new Error('Incorrect format');
-    };
+// export interface PatientEntry {
+//    id: string,
+//    name: string,
+//    dateOfBirth: string,
+//    ssn: string,
+//    gender: string,
+//    occupation: string
+// };
 
-    return value;
-};
+// export interface NewPatientEntry {
+//     name: string, dateOfBirth: string, ssn: string, gender: Gender, occupation: string
+// }
 
-const isGender = (param: string): param is Gender => {
-    return Object.values(Gender).map(v => v.toString()).includes(param);
-};
+// const isString = (text: unknown): text is string => {
+//  return typeof text === 'string' || text instanceof String;
+// };
 
-const parseGender = (value: unknown): Gender => {
-    if (!value || !isString(value) || !isGender(value)) {
-        throw new Error('Incorrect format');
-    };
+// const parseString = (value: unknown): string => {
+//     if (!value || !isString(value)) {
+//         throw new Error('Incorrect format');
+//     };
 
-    return value;
-};
+//     return value;
+// };
 
-export {
-    parseGender, parseString, isString, isGender, Diagnosis, PatientEntry, NonSensitivePatientEntry, NewPatientEntry
-};
+// const isGender = (param: string): param is Gender => {
+//     return Object.values(Gender).map(v => v.toString()).includes(param);
+// };
+
+// const parseGender = (value: unknown): Gender => {
+//     if (!value || !isString(value) || !isGender(value)) {
+//         throw new Error('Incorrect format');
+//     };
+
+//     return value;
+// };
+
