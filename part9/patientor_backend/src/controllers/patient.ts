@@ -1,6 +1,7 @@
-import express, { Response } from 'express';
-import { NonSensitivePatientEntry } from '../types';
+import express, { Request, Response } from 'express';
+import { NewPatientEntry, NonSensitivePatientEntry, PatientEntry } from '../types';
 import patientService from '../services/patientService';
+import { errorMiddleware, newPatientParser } from '../middleware';
 
 
 const router = express.Router();
@@ -19,16 +20,36 @@ router.get('/:id', (req, res: Response<NonSensitivePatientEntry>) => {
     };
 });
 
-router.post('/', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const {name, dateOfBirth, ssn, gender, occupation} = req.body;
+router.post('/', newPatientParser,(req: Request<unknown, unknown, NewPatientEntry>, res: Response<PatientEntry>) => {
+    
+    const addPatientEntry = patientService.postAddPatient(req.body);
+    res.json(addPatientEntry);
 
-    const addedEntry = patientService.postAddPatient(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        {name, dateOfBirth, ssn, gender, occupation}
-    );
+    // // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // const {name, dateOfBirth, ssn, gender, occupation} = req.body;
 
-    res.json(addedEntry);
+    // const addedEntry = patientService.postAddPatient(
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //     {name, dateOfBirth, ssn, gender, occupation}
+    // );
+
+    // res.json(addedEntry).status(204);
+
+    // try {
+    //     const addPatientEntry = patientService.postAddPatient(
+    //         req.body
+    //     );
+
+    //     res.json(addPatientEntry);
+    // } catch (error: unknown) {
+    //     if (error instanceof z.ZodError) {
+    //         res.status(400).send({ error: error.issues});
+    //     } else {
+    //         res.status(400).send({ error: 'unknown error'});
+    //     }
+    // }
 });
+
+router.use(errorMiddleware);
 
 export default router;

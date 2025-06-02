@@ -5,7 +5,7 @@ Accept: application/json
 {
     "name": "Ian Cardona",
     "dateOfBirth": "Today",
-    "ssn": "DRAIN_GANG",
+    "ssn": "2001-1002-1200",
     "gender": "male",
-    "occupation": "Drainer"
+    "occupation": "Software Engineer"
 }
