@@ -1,5 +1,5 @@
-import { useState, type FormEvent, type SyntheticEvent } from 'react'
-import type { NewDiaryEntry } from '../types'
+import { useState, type SyntheticEvent } from 'react'
+import type { NewDiaryEntry, Visibility, Weather } from '../types'
 
 interface AddNewEntryProps {
   title: string
@@ -8,9 +8,17 @@ interface AddNewEntryProps {
 
 const AddNewEntry = (props: AddNewEntryProps) => {
   const [date, setDate] = useState('')
-  const [visibility, setVisibility] = useState('')
-  const [weather, setWeather] = useState('')
+  const [visibility, setVisibility] = useState<Visibility>('great')
+  const [weather, setWeather] = useState<Weather>('sunny')
   const [comment, setComment] = useState('')
+  const visibilityOptions: Visibility[] = ['great', 'good', 'ok', 'poor']
+  const weatherOptions: Weather[] = [
+    'sunny',
+    'rainy',
+    'cloudy',
+    'stormy',
+    'windy',
+  ]
 
   const submitNewEntry = (event: SyntheticEvent) => {
     event.preventDefault()
@@ -28,39 +36,51 @@ const AddNewEntry = (props: AddNewEntryProps) => {
       <h2>{props.title}</h2>
       <form onSubmit={submitNewEntry}>
         <div>
-          date
+          <label>date</label>
           <input
+            type="date"
             value={date}
-            onChange={(e: FormEvent<HTMLInputElement>): void => {
-              setDate(e.currentTarget.value)
-            }}
+            onChange={(e) => setDate(e.currentTarget.value)}
+            required
           />
         </div>
         <div>
-          visibility
-          <input
-            value={visibility}
-            onChange={(e: FormEvent<HTMLInputElement>): void => {
-              setVisibility(e.currentTarget.value)
-            }}
-          />
+          <label>visibility</label>
+          {visibilityOptions.map((option) => (
+            <label key={option}>
+              <input
+                type="radio"
+                name="visibility"
+                value={option}
+                checked={visibility === option}
+                onChange={(e) =>
+                  setVisibility(e.currentTarget.value as Visibility)
+                }
+              />
+              {option}
+            </label>
+          ))}
         </div>
         <div>
-          weather
-          <input
-            value={weather}
-            onChange={(e: FormEvent<HTMLInputElement>): void => {
-              setWeather(e.currentTarget.value)
-            }}
-          />
+          <label>weather</label>
+          {weatherOptions.map((option) => (
+            <label key={option}>
+              <input
+                type="radio"
+                name="weather"
+                value={option}
+                checked={weather === option}
+                onChange={(e) => setWeather(e.currentTarget.value as Weather)}
+              />
+              {option}
+            </label>
+          ))}
         </div>
         <div>
-          comment
+          <label>comment</label>
           <input
             value={comment}
-            onChange={(e: FormEvent<HTMLInputElement>): void => {
-              setComment(e.currentTarget.value)
-            }}
+            onChange={(e) => setComment(e.currentTarget.value)}
           />
         </div>
         <button type="submit">add</button>
