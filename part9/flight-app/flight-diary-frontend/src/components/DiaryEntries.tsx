@@ -10,7 +10,7 @@ const DiaryEntries = (props: DiaryEntriesProps) => {
     <div>
       <h2>{props.title}</h2>
       {props.diaryEntries.map((value) => (
-        <div>
+        <div key={value.id}>
           <h3>{value.date}</h3>
           <p>visibility: {value.visibility}</p>
           <p>weather: {value.weather}</p>
