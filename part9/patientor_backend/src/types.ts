@@ -18,7 +18,7 @@ export interface PatientEntry extends NewPatientEntry {
     id: string;
 }
 
-export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
+export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn' | 'entries'>;
 
 // export interface PatientEntry {
 //    id: string,

@@ -2,20 +2,22 @@ import { v4 as uuidv4 } from 'uuid';
 import patientsData from '../../data/patients';
 
 import { NewPatientEntry, NonSensitivePatientEntry, PatientEntry } from '../types';
-import { newPatientSchema, nonSensitivePatientEntrySchema, patientEntrySchema } from '../utils';
+import { newPatientSchema, patientEntrySchema } from '../utils';
 
 const getPatients = (): PatientEntry[] => {
     return patientsData.map((patient) => patientEntrySchema.parse(patient));
 };
 
 const getPatientsEntries = ():  NonSensitivePatientEntry[] => {
-    return patientsData.map((patient) => nonSensitivePatientEntrySchema.parse(patient));
+    // return patientsData.map((patient) => nonSensitivePatientEntrySchema.parse(patient));
+    return patientsData.map((patient) => patientEntrySchema.parse(patient));
 };
 
 const getPatientsEntryById = (id: string): NonSensitivePatientEntry | undefined => {
    const patient = patientsData.find((entry) => entry.id === id);
    if (!patient) return undefined;
-   return nonSensitivePatientEntrySchema.parse(patient);
+//    return nonSensitivePatientEntrySchema.parse(patient);
+return patientEntrySchema.parse(patient);
 };
 
 const toNewPatientEntry = (object: unknown): NewPatientEntry => {
