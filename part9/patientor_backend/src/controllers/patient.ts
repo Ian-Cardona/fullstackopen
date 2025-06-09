@@ -1,16 +1,16 @@
 import express, { Request, Response } from 'express';
-import { NewPatientEntry, NonSensitivePatientEntry, PatientEntry } from '../types';
+import {  PatientEntry } from '../types';
 import patientService from '../services/patientService';
 import { errorMiddleware, newPatientParser } from '../middleware';
 
 
 const router = express.Router();
 
-router.get('/', (_req, res: Response<NonSensitivePatientEntry[]>) => {
+router.get('/', (_req, res: Response<PatientEntry[]>) => {
     res.send(patientService.getPatientsEntries());
 });
 
-router.get('/:id', (req, res: Response<NonSensitivePatientEntry>) => {
+router.get('/:id', (req, res: Response<PatientEntry>) => {
     const patient = patientService.getPatientsEntryById(req.params.id);
 
     if (patient) {
@@ -20,7 +20,7 @@ router.get('/:id', (req, res: Response<NonSensitivePatientEntry>) => {
     };
 });
 
-router.post('/', newPatientParser,(req: Request<unknown, unknown, NewPatientEntry>, res: Response<PatientEntry>) => {
+router.post('/', newPatientParser,(req: Request<unknown, unknown, PatientEntry>, res: Response<PatientEntry>) => {
     
     const addPatientEntry = patientService.postAddPatient(req.body);
     res.json(addPatientEntry);
