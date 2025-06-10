@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import patientsData from "../../data/patients";
+import patientsData from "../../data/patients-full";
 
 import {
-    parseArray,
-//   NewPatientEntry,
+  parseArray,
+  //   NewPatientEntry,
   parseGender,
   parseString,
   PatientEntry,
@@ -17,20 +17,20 @@ import {
 const getPatientsEntries = (): PatientEntry[] => {
   // return patientsData.map((patient) => nonSensitivePatientEntrySchema.parse(patient));
   // return patientsData.map((patient) => patientEntrySchema.parse(patient));
-  return patientsData.map(({ id, name, ssn, dateOfBirth, gender, occupation, entries }) => ({
-    id: parseString(id),
-    name: parseString(name),
-    ssn: parseString(ssn),
-    dateOfBirth: parseString(dateOfBirth),
-    gender: parseGender(gender),
-    occupation: parseString(occupation),
-    entries: parseArray(entries)
-  }));
+  return patientsData.map(
+    ({ id, name, ssn, dateOfBirth, gender, occupation, entries }) => ({
+      id: parseString(id),
+      name: parseString(name),
+      ssn: parseString(ssn),
+      dateOfBirth: parseString(dateOfBirth),
+      gender: parseGender(gender),
+      occupation: parseString(occupation),
+      entries: parseArray(entries),
+    })
+  );
 };
 
-const getPatientsEntryById = (
-  id: string
-): PatientEntry | undefined => {
+const getPatientsEntryById = (id: string): PatientEntry | undefined => {
   const patient = patientsData.find((entry) => entry.id === id);
   if (!patient) return undefined;
   //    return nonSensitivePatientEntrySchema.parse(patient);
@@ -42,8 +42,7 @@ const getPatientsEntryById = (
     dateOfBirth: parseString(patient.dateOfBirth),
     gender: parseGender(patient.gender),
     occupation: parseString(patient.occupation),
-    entries: parseArray(patient.entries)
-    
+    entries: parseArray(patient.entries),
   };
 };
 
@@ -62,13 +61,13 @@ const toNewPatientEntry = (object: unknown): PatientEntry => {
     "entries" in object
   ) {
     const newEntry: PatientEntry = {
-        id: uuidv4(),
-        name: parseString(object.name),
-        dateOfBirth: parseString(object.dateOfBirth),
-        ssn: parseString(object.ssn),
-        gender: parseGender(object.gender),
-        occupation: parseString(object.occupation),
-        entries: parseArray(object.entries)
+      id: uuidv4(),
+      name: parseString(object.name),
+      dateOfBirth: parseString(object.dateOfBirth),
+      ssn: parseString(object.ssn),
+      gender: parseGender(object.gender),
+      occupation: parseString(object.occupation),
+      entries: parseArray(object.entries),
     };
 
     return newEntry;
@@ -89,7 +88,7 @@ const toNewPatientEntry = (object: unknown): PatientEntry => {
 
 const postAddPatient = (entry: unknown): PatientEntry => {
   const newPatientEntry: PatientEntry = toNewPatientEntry(entry);
-  
+
   patientsData.push(newPatientEntry);
   return newPatientEntry;
 };

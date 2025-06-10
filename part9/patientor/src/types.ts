@@ -15,8 +15,21 @@ interface BaseEntry {
   description: string;
   date: string;
   specialist: string;
-
   diagnosisCodes?: Array<Diagnosis["code"]>;
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthCare";
+}
+
+interface Discharge {
+  date: string;
+  criteria: string;
+}
+
+interface HospitalEntry extends BaseEntry {
+  type: "Hospital";
+  discharge: Discharge;
 }
 
 export enum HealthCheckRating {
@@ -31,13 +44,16 @@ interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: HealthCheckRating;
 }
 
-export type Entry = HealthCheckEntry;
+export type Entry =
+  | HospitalEntry
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry;
 
 // Define special omit for unions
 type UnionOmit<T, K extends string | number | symbol> = T extends unknown
   ? Omit<T, K>
   : never;
-// Define Entry without the 'id' property
+
 type EntryWithoutId = UnionOmit<Entry, "id">;
 
 export interface Patient {
