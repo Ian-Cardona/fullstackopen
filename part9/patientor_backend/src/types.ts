@@ -25,6 +25,7 @@ interface SickLeave {
   startDate: string;
   endDate: string;
 }
+
 interface Discharge {
   date: string;
   criteria: string;
