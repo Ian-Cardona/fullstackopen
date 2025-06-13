@@ -1,27 +1,35 @@
-import express, { Request, Response } from 'express';
-import {  PatientEntry } from '../types';
-import patientService from '../services/patientService';
-import { errorMiddleware, newPatientParser } from '../middleware';
+import express, { Request, Response } from "express";
+import { Entry, PatientEntry } from "../types";
+import patientService from "../services/patientService";
+import { errorMiddleware, newPatientParser } from "../middleware";
 
+type Params = {
+  id: string;
+};
 
 const router = express.Router();
 
-router.get('/', (_req, res: Response<PatientEntry[]>) => {
-    res.send(patientService.getPatientsEntries());
+router.get("/", (_req, res: Response<PatientEntry[]>) => {
+  res.send(patientService.getPatientsEntries());
 });
 
-router.get('/:id', (req, res: Response<PatientEntry>) => {
-    const patient = patientService.getPatientsEntryById(req.params.id);
+router.get("/:id", (req, res: Response<PatientEntry>) => {
+  const patient = patientService.getPatientsEntryById(req.params.id);
 
-    if (patient) {
-        res.send(patient);
-    } else {
-        res.sendStatus(404);
-    };
+  if (patient) {
+    res.send(patient);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
-router.post('/', newPatientParser,(req: Request<unknown, unknown, PatientEntry>, res: Response<PatientEntry>) => {
-    
+router.post(
+  "/",
+  newPatientParser,
+  (
+    req: Request<unknown, unknown, PatientEntry>,
+    res: Response<PatientEntry>
+  ) => {
     const addPatientEntry = patientService.postAddPatient(req.body);
     res.json(addPatientEntry);
 
@@ -48,7 +56,17 @@ router.post('/', newPatientParser,(req: Request<unknown, unknown, PatientEntry>,
     //         res.status(400).send({ error: 'unknown error'});
     //     }
     // }
-});
+  }
+);
+
+router.post(
+  "/:id/entries",
+  (req: Request<Params, unknown, Entry>, res: Response<Entry>) => {
+    const id = req.params.id;
+    const addNewEntry = patientService.postNewEntryToId(id, req.body);
+    res.json(addNewEntry);
+  }
+);
 
 router.use(errorMiddleware);
 

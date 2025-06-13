@@ -2,11 +2,19 @@ import { v4 as uuidv4 } from "uuid";
 import patientsData from "../../data/patients-full";
 
 import {
+  Entry,
   parseArray,
   //   NewPatientEntry,
   parseGender,
   parseString,
   PatientEntry,
+  parseDiagnosisCodes,
+  parseDischarge,
+  parseHealthCheckRating,
+  parseSickLeave,
+  isHospitalEntry,
+  isHealthCheckEntry,
+  isOccupationalHealthcareEntry,
 } from "../types";
 // import { newPatientSchema, patientEntrySchema } from '../utils';
 
@@ -93,8 +101,75 @@ const postAddPatient = (entry: unknown): PatientEntry => {
   return newPatientEntry;
 };
 
+const toNewEntry = (object: unknown): Entry => {
+  if (!object || typeof object !== "object") {
+    throw new Error("Incorrect or missing data");
+  }
+
+  if (
+    "description" in object &&
+    "date" in object &&
+    "specialist" in object &&
+    "diagnosisCodes" in object &&
+    "type" in object
+  ) {
+    const newEntry = {
+      id: uuidv4(),
+      description: parseString(object.description),
+      date: parseString(object.date),
+      specialist: parseString(object.specialist),
+      diagnosisCodes: parseDiagnosisCodes({
+        diagnosisCodes: object.diagnosisCodes,
+      }),
+    };
+
+    switch (object.type) {
+      case "Hospital":
+        if (!isHospitalEntry(object)) {
+          throw new Error("Hospital entry missing discharge");
+        }
+        return {
+          ...newEntry,
+          type: "Hospital",
+          discharge: parseDischarge(object.discharge),
+        };
+      case "HealthCheck":
+        if (!isHealthCheckEntry(object)) {
+          throw new Error("Hospital entry missing discharge");
+        }
+        return {
+          ...newEntry,
+          type: "HealthCheck",
+          healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+        };
+      case "OccupationalHealthcare":
+        if (!isOccupationalHealthcareEntry(object)) {
+          throw new Error("Hospital entry missing discharge");
+        }
+        return {
+          ...newEntry,
+          type: "OccupationalHealthcare",
+          employerName: parseString(object.employerName),
+          sickLeave: parseSickLeave(object.sickLeave),
+        };
+      default:
+        throw new Error(`Unknown error: Invalid types.`);
+    }
+  }
+  throw new Error("Incorrect data: some fields are missing or invalid");
+};
+
+const postNewEntryToId = (id: string, entry: unknown): Entry => {
+  const newEntry: Entry = toNewEntry(entry);
+  console.log("newEntry", newEntry);
+  patientsData.find((patient) => patient.id == id)?.entries.push(newEntry);
+
+  return newEntry;
+};
+
 export default {
   getPatientsEntries,
   getPatientsEntryById,
   postAddPatient,
+  postNewEntryToId,
 };
