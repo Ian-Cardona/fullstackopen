@@ -53,7 +53,6 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
-// Define special omit for unions
 type UnionOmit<T, K extends string | number | symbol> = T extends unknown
   ? Omit<T, K>
   : never;
@@ -110,6 +109,78 @@ export const parseArray = (value: unknown): [] => {
   }
 
   return value as [];
+};
+
+export const parseDiagnosisCodes = (
+  object: unknown
+): Array<Diagnosis["code"]> => {
+  if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
+    // we will just trust the data to be in correct form
+    return [] as Array<Diagnosis["code"]>;
+  }
+
+  return object.diagnosisCodes as Array<Diagnosis["code"]>;
+};
+
+export const parseDischarge = (object: unknown): Discharge => {
+  if (!object || typeof object !== "object" || !("discharge" in object)) {
+    throw new Error("Incorrect format");
+  }
+
+  return object.discharge as Discharge;
+};
+
+export const parseHealthCheckRating = (object: unknown): HealthCheckRating => {
+  if (
+    !object ||
+    typeof object !== "object" ||
+    !("healthCheckRating" in object)
+  ) {
+    throw new Error("Incorrect format");
+  }
+
+  return object.healthCheckRating as HealthCheckRating;
+};
+
+export const parseSickLeave = (object: unknown): SickLeave => {
+  if (
+    !object ||
+    typeof object !== "object" ||
+    !("startDate" in object) ||
+    !("endDate" in object)
+  ) {
+    throw new Error("Incorrect format");
+  }
+
+  return {
+    startDate: parseString(object.startDate),
+    endDate: parseString(object.endDate),
+  };
+};
+
+export const isHospitalEntry = (
+  object: unknown
+): object is { discharge: unknown } => {
+  return !!object && typeof object === "object" && "discharge" in object;
+};
+
+export const isHealthCheckEntry = (
+  object: unknown
+): object is { healthCheckRating: unknown } => {
+  return (
+    !!object && typeof object === "object" && "healthCheckRating" in object
+  );
+};
+
+export const isOccupationalHealthcareEntry = (
+  object: unknown
+): object is { employerName: unknown; sickLeave: unknown } => {
+  return (
+    !!object &&
+    typeof object === "object" &&
+    "employerName" in object &&
+    "sickLeave" in object
+  );
 };
 
 // export type NewPatientEntry = z.infer<typeof newPatientSchema>;

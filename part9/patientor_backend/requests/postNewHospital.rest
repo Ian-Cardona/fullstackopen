@@ -1,0 +1,18 @@
+POST http://localhost:3003/api/patients/d2773c6e-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+Accept: application/json
+
+{
+    "date": "2025-06-13",
+    "type": "Hospital",
+    "specialist": "Hospital 2025 Music",
+    "employerName": "PSBork",
+    "diagnosisCodes": [
+        "M51.2"
+    ],
+    "description": "Borking like crazy.",
+    "discharge": {
+        "date": "2025-05-29",
+        "criteria": "Bork was borked."
+    }
+}
