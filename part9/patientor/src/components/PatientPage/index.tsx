@@ -19,7 +19,7 @@ const PatientPage = ({ patients }: PatientPageProps) => {
     };
 
     void fetchDiagnosisList();
-  });
+  }, []);
 
   const { id } = useParams();
   const patient = patients.find((patient) => patient.id == id);

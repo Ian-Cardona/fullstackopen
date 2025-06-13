@@ -9,10 +9,13 @@ const EntryDetails: React.FC<{ entry: Entry; diagnoses: Array<Diagnosis> }> = ({
 }) => {
   switch (entry.type) {
     case "Hospital":
-      return <HospitalEntry hospitalEntry={entry} />;
+      return <HospitalEntry hospitalEntry={entry} diagnoses={diagnoses} />;
     case "OccupationalHealthcare":
       return (
-        <OccupationalHealthcareEntry occupationalHealthcareEntry={entry} />
+        <OccupationalHealthcareEntry
+          occupationalHealthcareEntry={entry}
+          diagnoses={diagnoses}
+        />
       );
     case "HealthCheck":
       return (

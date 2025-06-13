@@ -1,9 +1,10 @@
 import { Card } from "@mui/material";
-import type { OccupationalHealthcareEntry } from "../../types";
+import type { Diagnosis, OccupationalHealthcareEntry } from "../../types";
 import { MedicalServicesRounded } from "@mui/icons-material";
 
 interface OccupationalHealthcareEntryProps {
   occupationalHealthcareEntry: OccupationalHealthcareEntry;
+  diagnoses: Diagnosis[];
 }
 
 const OccupationalHealthcareEntry = (
@@ -15,6 +16,9 @@ const OccupationalHealthcareEntry = (
         {props.occupationalHealthcareEntry.date}
         <MedicalServicesRounded></MedicalServicesRounded>
       </div>
+      <em>{props.occupationalHealthcareEntry.description}</em>
+      <div></div>
+      diagnose by {props.occupationalHealthcareEntry.specialist}
     </Card>
   );
 };

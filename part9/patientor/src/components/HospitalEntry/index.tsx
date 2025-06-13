@@ -1,9 +1,10 @@
 import { Card } from "@mui/material";
-import type { HospitalEntry } from "../../types";
+import type { Diagnosis, HospitalEntry } from "../../types";
 import { MedicalServicesRounded } from "@mui/icons-material";
 
 interface HospitalEntryProps {
   hospitalEntry: HospitalEntry;
+  diagnoses: Diagnosis[];
 }
 
 const HospitalEntry = (props: HospitalEntryProps) => {
@@ -14,6 +15,20 @@ const HospitalEntry = (props: HospitalEntryProps) => {
         {props.hospitalEntry.date}
         <MedicalServicesRounded></MedicalServicesRounded>
       </div>
+      {props.hospitalEntry.description}
+      {props.hospitalEntry.diagnosisCodes?.map((code) => (
+        <li key={code}>
+          {code}{" "}
+          {props.diagnoses.map((a) =>
+            a.code == code ? (
+              <span key={a.code}>
+                <em>{a.name}</em>
+              </span>
+            ) : null
+          )}
+        </li>
+      ))}
+      diagnose by {props.hospitalEntry.specialist}
     </Card>
   );
 };
