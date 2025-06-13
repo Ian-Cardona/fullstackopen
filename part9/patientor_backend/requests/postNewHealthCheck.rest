@@ -1,0 +1,12 @@
+POST http://localhost:3003/api/patients/d2773c6e-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+Accept: application/json
+
+{
+    "date": "2025-06-13",
+    "type": "HealthCheck",
+    "specialist": "Dr Bort",
+    "diagnosisCodes": [],
+    "description": "Health check!",
+    "healthCheckRating": 0
+}

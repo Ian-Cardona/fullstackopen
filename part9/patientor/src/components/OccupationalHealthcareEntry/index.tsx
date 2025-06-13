@@ -18,6 +18,18 @@ const OccupationalHealthcareEntry = (
       </div>
       <em>{props.occupationalHealthcareEntry.description}</em>
       <div></div>
+      {props.occupationalHealthcareEntry.diagnosisCodes?.map((code) => (
+        <li key={code}>
+          {code}{" "}
+          {props.diagnoses.map((a) =>
+            a.code == code ? (
+              <span key={a.code}>
+                <em>{a.name}</em>
+              </span>
+            ) : null
+          )}
+        </li>
+      ))}
       diagnose by {props.occupationalHealthcareEntry.specialist}
     </Card>
   );

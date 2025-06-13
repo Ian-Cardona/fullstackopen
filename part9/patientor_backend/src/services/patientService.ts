@@ -113,6 +113,7 @@ const toNewEntry = (object: unknown): Entry => {
     "diagnosisCodes" in object &&
     "type" in object
   ) {
+    console.log("object", object);
     const newEntry = {
       id: uuidv4(),
       description: parseString(object.description),
@@ -131,7 +132,7 @@ const toNewEntry = (object: unknown): Entry => {
         return {
           ...newEntry,
           type: "Hospital",
-          discharge: parseDischarge(object.discharge),
+          discharge: parseDischarge({ discharge: object.discharge }),
         };
       case "HealthCheck":
         if (!isHealthCheckEntry(object)) {
@@ -140,7 +141,9 @@ const toNewEntry = (object: unknown): Entry => {
         return {
           ...newEntry,
           type: "HealthCheck",
-          healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+          healthCheckRating: parseHealthCheckRating({
+            healthCheckRating: object.healthCheckRating,
+          }),
         };
       case "OccupationalHealthcare":
         if (!isOccupationalHealthcareEntry(object)) {
@@ -161,7 +164,7 @@ const toNewEntry = (object: unknown): Entry => {
 
 const postNewEntryToId = (id: string, entry: unknown): Entry => {
   const newEntry: Entry = toNewEntry(entry);
-  console.log("newEntry", newEntry);
+  console.log("New Entry Check", newEntry);
   patientsData.find((patient) => patient.id == id)?.entries.push(newEntry);
 
   return newEntry;
