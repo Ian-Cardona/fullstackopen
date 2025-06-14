@@ -28,6 +28,7 @@ const HospitalEntry = (props: HospitalEntryProps) => {
           )}
         </li>
       ))}
+      <div></div>
       diagnose by {props.hospitalEntry.specialist}
     </Card>
   );
