@@ -1,0 +1,45 @@
+Script started on Fri Jul 18 23:41:47 2025
+[1m[7m%[27m[1m[0m                                                                                    [0m[27m[24m[Jiancardona@Ians-MacBook-Pro script-answers % [K[?2004hddocker contaier  ner run hello-world[?2004l
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (arm64v8)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+[1m[7m%[27m[1m[0m                                                                                    [0m[27m[24m[Jiancardona@Ians-MacBook-Pro script-answers % [K[?2004hddockerr r  run -it ubuntu bash[?2004l
+[?2004h]0;root@3defc51f851a: /root@3defc51f851a:/# echo ""h"e"l"l"o"
+[?2004lhello
+[?2004h]0;root@3defc51f851a: /root@3defc51f851a:/# ls
+[?2004l[0m[01;36mbin[0m   [01;34mdev[0m  [01;34mhome[0m  [01;34mmedia[0m  [01;34mopt[0m   [01;34mroot[0m  [01;36msbin[0m  [01;34msys[0m  [01;34musr[0m
+[01;34mboot[0m  [01;34metc[0m  [01;36mlib[0m   [01;34mmnt[0m    [01;34mproc[0m  [01;34mrun[0m   [01;34msrv[0m   [30;42mtmp[0m  [01;34mvar[0m
+[?2004h]0;root@3defc51f851a: /root@3defc51f851a:/# cd usr/
+[?2004l[?2004h]0;root@3defc51f851a: /usrroot@3defc51f851a:/usr# ls
+[?2004l[0m[01;34mbin[0m  [01;34mgames[0m  [01;34minclude[0m  [01;34mlib[0m  [01;34mlibexec[0m  [01;34mlocal[0m  [01;34msbin[0m  [01;34mshare[0m  [01;34msrc[0m
+[?2004h]0;root@3defc51f851a: /usrroot@3defc51f851a:/usr# cd src/
+[?2004l[?2004h]0;root@3defc51f851a: /usr/srcroot@3defc51f851a:/usr/src# ls
+[?2004l[?2004h]0;root@3defc51f851a: /usr/srcroot@3defc51f851a:/usr/src# mkdir app
+[?2004l[?2004h]0;root@3defc51f851a: /usr/srcroot@3defc51f851a:/usr/src# ls
+[?2004l[0m[01;34mapp[0m
+[?2004h]0;root@3defc51f851a: /usr/srcroot@3defc51f851a:/usr/src# cd app && touch index.js &&    && ls
+[?2004lindex.js
+[?2004h]0;root@3defc51f851a: /usr/src/approot@3defc51f851a:/usr/src/app# exit
+[?2004lexit
+[1m[7m%[27m[1m[0m                                                                                    [0m[27m[24m[Jiancardona@Ians-MacBook-Pro script-answers % [K[?2004heexit[?2004l
+
+Script done on Fri Jul 18 23:42:57 2025
