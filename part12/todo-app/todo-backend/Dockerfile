@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node . .
 
-RUN npm ci --omit=dev
+RUN npm ci
 
-ENV DEBUG=express:*
+ENV DEBUG=todo-backend:*
 
 USER node
 
