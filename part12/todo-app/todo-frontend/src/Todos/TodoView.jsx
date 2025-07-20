@@ -43,12 +43,11 @@ const TodoView = () => {
     refreshTodos()
   }
   
-
   return (
     <>
       <h1>Todos</h1>
       <Form createTodo={createTodo} />
-      <List todos={todos} deleteTodo={deleteTodo} completeTodo={completeTodo} />
+      <List todos={todos} deleteTodo={deleteTodo} completeTodo={completeTodo} updateTodo={updateTodo}/>
     </>
   )
 }
