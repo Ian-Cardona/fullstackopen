@@ -16,10 +16,10 @@ const TodoView = () => {
     refreshTodos()
   }, [])
 
-  const getTodoById = async (id) => {
-    const { data } = await axios.get('/todos/:id', id)
-    setTodos(data)
-  }
+  // const getTodoById = async (id) => {
+  //   const { data } = await axios.get('/todos/:id', id)
+  //   setTodos(data)
+  // }
 
   const createTodo = async (todo) => {
     const { data } = await axios.post('/todos', todo)
