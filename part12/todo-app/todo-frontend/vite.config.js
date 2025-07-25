@@ -7,4 +7,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['spec/**/*.spec.{js,jsx,ts,tsx}']
   },
+  server: {
+    allowedHosts: ['app']
+  },
 })
