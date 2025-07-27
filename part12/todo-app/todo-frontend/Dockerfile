@@ -8,12 +8,12 @@ RUN npm ci
 
 RUN npm run test
 
-ENV VITE_BACKEND_URL=http://localhost:3000
+ENV VITE_BACKEND_URL=http://localhost:8080/api
 
 RUN npm run build
 
-FROM nginx:1.25-alpine
+FROM alpine:latest
 
-RUN apk update && apk add --no-cache bash
+WORKDIR /app
 
-COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
+COPY --from=build-stage /usr/src/app/dist .
