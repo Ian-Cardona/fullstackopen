@@ -46,7 +46,6 @@ const TodoView = () => {
   return (
     <>
       <h1>Todos</h1>
-      <h2>This application is currently being developed inside a container!</h2>
       <Form createTodo={createTodo} />
       <List todos={todos} deleteTodo={deleteTodo} completeTodo={completeTodo} updateTodo={updateTodo}/>
     </>
